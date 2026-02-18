@@ -4,8 +4,8 @@ import { io, Socket } from 'socket.io-client';
 import Editor from '@monaco-editor/react';
 import { Users, Copy, CheckCircle, Play, Lightbulb, MessageSquare, BookOpen, Timer, ChevronDown, ChevronUp, LogOut } from 'lucide-react';
 
-const SOCKET_URL = 'http://localhost:5000';
-const API_URL = 'http://localhost:5000';
+const SOCKET_URL = import.meta.env.VITE_SOCKET_URL || 'http://localhost:5000';
+const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000';
 
 interface Problem {
   id: string;
@@ -371,7 +371,7 @@ function Session() {
                 {isRunning ? 'Running...' : 'Run Code'}
               </button>
               <span style={{ color: '#888', fontSize: '0.8rem' }}>
-                {canExecute ? 'JavaScript & TypeScript execution supported (Python coming soon)' : 'Only JavaScript, TypeScript & Python supported'}
+                {canExecute ? 'JavaScript & TypeScript execution supported (Python coming soon)' : 'Only JavaScript & TypeScript supported'}
               </span>
             </div>
             <div style={{ padding: '0.75rem 1rem', minHeight: '80px', maxHeight: '150px', overflow: 'auto', fontFamily: 'monospace', fontSize: '0.85rem', color: outputError ? '#f44747' : '#4ec9b0', whiteSpace: 'pre-wrap' }}>
