@@ -1,8 +1,8 @@
 import { useEffect, useState, useRef } from 'react';
-import { useParams, useSearchParams } from 'react-router-dom';
+import { useParams, useSearchParams, useNavigate } from 'react-router-dom';
 import { io, Socket } from 'socket.io-client';
 import Editor from '@monaco-editor/react';
-import { Users, Copy, CheckCircle, Play, Lightbulb, MessageSquare, BookOpen, Timer, ChevronDown, ChevronUp } from 'lucide-react';
+import { Users, Copy, CheckCircle, Play, Lightbulb, MessageSquare, BookOpen, Timer, ChevronDown, ChevronUp, LogOut } from 'lucide-react';
 
 const SOCKET_URL = 'http://localhost:5000';
 const API_URL = 'http://localhost:5000';
@@ -27,6 +27,7 @@ interface ChatMessage {
 function Session() {
   const { sessionId } = useParams();
   const [searchParams] = useSearchParams();
+  const navigate = useNavigate();
   const username = searchParams.get('username') || 'Anonymous';
 
   const [code, setCode] = useState('// Start coding here...\n');
@@ -166,6 +167,13 @@ function Session() {
     }
   };
 
+  const endSession = () => {
+    if (socketRef.current) {
+      socketRef.current.disconnect();
+    }
+    navigate('/');
+  };
+
   const copySessionId = () => {
     navigator.clipboard.writeText(sessionId || '');
     setCopied(true);
@@ -184,6 +192,8 @@ function Session() {
     return '#f44747';
   };
 
+  const canExecute = ['javascript', 'typescript', 'python'].includes(language);
+
   return (
     <div style={{ height: '100vh', display: 'flex', flexDirection: 'column', background: '#1e1e1e' }}>
 
@@ -201,7 +211,6 @@ function Session() {
         </div>
 
         <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
-          {/* Timer */}
           <div style={{ display: 'flex', alignItems: 'center', gap: '0.4rem' }}>
             <Timer size={16} color="#888" />
             <span style={{ fontFamily: 'monospace', fontSize: '0.9rem', color: timerRunning ? '#4ec9b0' : '#888' }}>{formatTime(seconds)}</span>
@@ -213,21 +222,27 @@ function Session() {
             </button>
           </div>
 
-          {/* Language */}
           <select value={language} onChange={handleLanguageChange} style={{ background: '#2d2d2d', color: 'white', border: '1px solid #444', borderRadius: '4px', padding: '0.3rem', fontSize: '0.85rem' }}>
             <option value="javascript">JavaScript</option>
             <option value="typescript">TypeScript</option>
-            <option value="python">Python</option>
-            <option value="java">Java</option>
-            <option value="cpp">C++</option>
+            <option value="python">Python (coming soon)</option>
+            <option value="java">Java (view only)</option>
+            <option value="cpp">C++ (view only)</option>
           </select>
 
-          {/* Users */}
           <div style={{ display: 'flex', alignItems: 'center', gap: '0.4rem' }}>
             <Users size={16} />
             <span style={{ fontSize: '0.85rem' }}>{users.length}</span>
             {connected && <span style={{ width: '8px', height: '8px', background: '#4ec9b0', borderRadius: '50%', display: 'inline-block' }}></span>}
           </div>
+
+          <button 
+            onClick={endSession}
+            style={{ background: '#d32f2f', color: 'white', padding: '0.4rem 0.8rem', borderRadius: '4px', fontSize: '0.85rem', display: 'flex', alignItems: 'center', gap: '0.4rem', fontWeight: '500' }}
+          >
+            <LogOut size={14} />
+            End Session
+          </button>
         </div>
       </div>
 
@@ -237,7 +252,6 @@ function Session() {
         {/* LEFT PANEL - Problem */}
         <div style={{ width: '380px', flexShrink: 0, display: 'flex', flexDirection: 'column', borderRight: '1px solid #3e3e42', overflow: 'hidden' }}>
 
-          {/* Problem Selector Button */}
           <div style={{ padding: '0.75rem', borderBottom: '1px solid #3e3e42', display: 'flex', gap: '0.5rem' }}>
             <button
               onClick={() => setShowProblems(!showProblems)}
@@ -255,7 +269,6 @@ function Session() {
             )}
           </div>
 
-          {/* Problem List Dropdown */}
           {showProblems && (
             <div style={{ background: '#252526', border: '1px solid #3e3e42', borderRadius: '6px', margin: '0.5rem', overflow: 'hidden', zIndex: 10 }}>
               {problems.map(p => (
@@ -273,18 +286,16 @@ function Session() {
             </div>
           )}
 
-          {/* Hint */}
           {showHint && hint && (
             <div style={{ margin: '0.5rem', padding: '0.75rem', background: '#2d2d2d', borderRadius: '6px', border: '1px solid #ffd700', fontSize: '0.85rem' }}>
               <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '0.4rem' }}>
-                <span style={{ color: '#ffd700', fontWeight: 'bold' }}>💡 Hint</span>
+                <span style={{ color: '#ffd700', fontWeight: 'bold' }}>Hint</span>
                 <button onClick={() => setShowHint(false)} style={{ background: 'transparent', color: '#888', padding: 0, fontSize: '1rem' }}>×</button>
               </div>
               <p style={{ color: '#ccc', lineHeight: '1.4' }}>{hint}</p>
             </div>
           )}
 
-          {/* Problem Description */}
           {currentProblem && showProblem && (
             <div style={{ flex: 1, overflow: 'auto', padding: '1rem' }}>
               <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1rem' }}>
@@ -330,7 +341,6 @@ function Session() {
 
         {/* CENTER - Editor + Output */}
         <div style={{ flex: 1, display: 'flex', flexDirection: 'column', overflow: 'hidden' }}>
-          {/* Editor */}
           <div style={{ flex: 1, overflow: 'hidden' }}>
             <Editor
               height="100%"
@@ -350,18 +360,19 @@ function Session() {
             />
           </div>
 
-          {/* Run Button + Output */}
           <div style={{ background: '#252526', borderTop: '1px solid #3e3e42', flexShrink: 0 }}>
             <div style={{ padding: '0.5rem 1rem', display: 'flex', alignItems: 'center', gap: '1rem', borderBottom: '1px solid #3e3e42' }}>
               <button
                 onClick={runCode}
-                disabled={isRunning}
-                style={{ background: '#4ec9b0', color: '#1e1e1e', padding: '0.4rem 1rem', borderRadius: '6px', fontWeight: 'bold', fontSize: '0.85rem', display: 'flex', alignItems: 'center', gap: '0.4rem' }}
+                disabled={isRunning || !canExecute}
+                style={{ background: canExecute ? '#4ec9b0' : '#555', color: canExecute ? '#1e1e1e' : '#888', padding: '0.4rem 1rem', borderRadius: '6px', fontWeight: 'bold', fontSize: '0.85rem', display: 'flex', alignItems: 'center', gap: '0.4rem', cursor: canExecute ? 'pointer' : 'not-allowed' }}
               >
                 <Play size={14} />
                 {isRunning ? 'Running...' : 'Run Code'}
               </button>
-              <span style={{ color: '#888', fontSize: '0.8rem' }}>JavaScript & TypeScript only (Python coming soon)</span>
+              <span style={{ color: '#888', fontSize: '0.8rem' }}>
+                {canExecute ? 'JavaScript & TypeScript execution supported (Python coming soon)' : 'Only JavaScript, TypeScript & Python supported'}
+              </span>
             </div>
             <div style={{ padding: '0.75rem 1rem', minHeight: '80px', maxHeight: '150px', overflow: 'auto', fontFamily: 'monospace', fontSize: '0.85rem', color: outputError ? '#f44747' : '#4ec9b0', whiteSpace: 'pre-wrap' }}>
               {output || 'Output will appear here...'}
@@ -372,7 +383,6 @@ function Session() {
         {/* RIGHT PANEL - Chat + Participants */}
         <div style={{ width: '260px', flexShrink: 0, display: 'flex', flexDirection: 'column', borderLeft: '1px solid #3e3e42' }}>
 
-          {/* Participants */}
           <div style={{ padding: '0.75rem', borderBottom: '1px solid #3e3e42' }}>
             <h4 style={{ fontSize: '0.85rem', marginBottom: '0.5rem', color: '#888' }}>Participants ({users.length})</h4>
             {users.map((u, i) => (
@@ -383,7 +393,6 @@ function Session() {
             ))}
           </div>
 
-          {/* Chat Header */}
           <div
             style={{ padding: '0.75rem', borderBottom: '1px solid #3e3e42', display: 'flex', alignItems: 'center', justifyContent: 'space-between', cursor: 'pointer' }}
             onClick={() => setShowChat(!showChat)}
@@ -395,7 +404,6 @@ function Session() {
             {showChat ? <ChevronUp size={14} color="#888" /> : <ChevronDown size={14} color="#888" />}
           </div>
 
-          {/* Chat Messages */}
           {showChat && (
             <>
               <div style={{ flex: 1, overflow: 'auto', padding: '0.5rem' }}>
