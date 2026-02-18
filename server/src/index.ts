@@ -13,7 +13,7 @@ const app = express();
 const server = http.createServer(app);
 const io = new Server(server, {
   cors: {
-    origin: process.env.CLIENT_URL || 'http://localhost:5173',
+    origin: '*',
     methods: ['GET', 'POST'],
   },
 });
@@ -44,6 +44,10 @@ interface Session {
 }
 
 const sessions = new Map<string, Session>();
+
+app.get('/', (req, res) => {
+  res.json({ message: 'CodePair API is running', status: 'ok' });
+});
 
 app.get('/health', (req, res) => {
   res.json({ status: 'ok', message: 'CodePair server is running' });
@@ -113,14 +117,10 @@ io.on('connection', (socket) => {
       return;
     }
 
-    // Remove any existing entry for this socket first
     session.users = session.users.filter(u => u.socketId !== socket.id);
-
-    // Add user
     session.users.push({ socketId: socket.id, username });
     socket.join(sessionId);
 
-    // Store session info on socket for disconnect cleanup
     (socket as any).sessionId = sessionId;
     (socket as any).username = username;
 
@@ -203,7 +203,7 @@ io.on('connection', (socket) => {
 
 const PORT = process.env.PORT || 5000;
 server.listen(PORT, () => {
-  console.log('Server running on http://localhost:' + PORT);
+  console.log('Server running on port ' + PORT);
   console.log('WebSocket ready for connections');
   console.log(getAllProblems().length + ' problems loaded');
 });
