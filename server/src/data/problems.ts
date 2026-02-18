@@ -3,23 +3,10 @@ export interface Problem {
   title: string;
   difficulty: 'Easy' | 'Medium' | 'Hard';
   description: string;
-  examples: Array<{
-    input: string;
-    output: string;
-    explanation?: string;
-  }>;
+  examples: Array<{ input: string; output: string; explanation?: string }>;
   constraints: string[];
-  starterCode: {
-    javascript: string;
-    python: string;
-    typescript: string;
-    java: string;
-    cpp: string;
-  };
-  testCases: Array<{
-    input: string;
-    expectedOutput: string;
-  }>;
+  starterCode: { javascript: string; python: string; typescript: string; java: string; cpp: string; };
+  testCases: Array<{ input: string; expectedOutput: string }>;
   hints: string[];
   solution: string;
   topics: string[];
@@ -30,295 +17,225 @@ export const problems: Problem[] = [
     id: 'two-sum',
     title: 'Two Sum',
     difficulty: 'Easy',
-    description: `Given an array of integers nums and an integer target, return indices of the two numbers such that they add up to target.
-
-You may assume that each input would have exactly one solution, and you may not use the same element twice.
-
-You can return the answer in any order.`,
+    description: 'Given an array of integers nums and an integer target, return indices of the two numbers such that they add up to target.\n\nYou may assume that each input would have exactly one solution, and you may not use the same element twice.\n\nYou can return the answer in any order.',
     examples: [
-      {
-        input: 'nums = [2,7,11,15], target = 9',
-        output: '[0,1]',
-        explanation: 'Because nums[0] + nums[1] == 9, we return [0, 1].'
-      },
-      {
-        input: 'nums = [3,2,4], target = 6',
-        output: '[1,2]'
-      }
+      { input: 'nums = [2,7,11,15], target = 9', output: '[0,1]', explanation: 'Because nums[0] + nums[1] == 9, we return [0, 1].' },
+      { input: 'nums = [3,2,4], target = 6', output: '[1,2]' }
     ],
-    constraints: [
-      '2 <= nums.length <= 10^4',
-      '-10^9 <= nums[i] <= 10^9',
-      '-10^9 <= target <= 10^9',
-      'Only one valid answer exists.'
-    ],
+    constraints: ['2 <= nums.length <= 10^4', '-10^9 <= nums[i] <= 10^9', 'Only one valid answer exists.'],
     starterCode: {
-      javascript: `function twoSum(nums, target) {
-    // Your code here
-}`,
-      python: `def two_sum(nums, target):
-    # Your code here
-    pass`,
-      typescript: `function twoSum(nums: number[], target: number): number[] {
-    // Your code here
-    return [];
-}`,
-      java: `public int[] twoSum(int[] nums, int target) {
-    // Your code here
-    return new int[]{};
-}`,
-      cpp: `vector<int> twoSum(vector<int>& nums, int target) {
-    // Your code here
-    return {};
-}`
+      javascript: 'function twoSum(nums, target) {\n    // Your code here\n}',
+      python: 'def two_sum(nums, target):\n    # Your code here\n    pass',
+      typescript: 'function twoSum(nums: number[], target: number): number[] {\n    // Your code here\n    return [];\n}',
+      java: 'public int[] twoSum(int[] nums, int target) {\n    // Your code here\n    return new int[]{};\n}',
+      cpp: 'vector<int> twoSum(vector<int>& nums, int target) {\n    // Your code here\n    return {};\n}'
     },
-    testCases: [
-      { input: '[2,7,11,15], 9', expectedOutput: '[0,1]' },
-      { input: '[3,2,4], 6', expectedOutput: '[1,2]' },
-      { input: '[3,3], 6', expectedOutput: '[0,1]' }
-    ],
-    hints: [
-      'Try using a hash map to store numbers you\'ve seen',
-      'For each number, check if (target - current number) exists in the map',
-      'The time complexity can be O(n) with this approach'
-    ],
-    solution: `The optimal solution uses a hash map to achieve O(n) time complexity. As we iterate through the array, we check if the complement (target - current number) exists in our map. If it does, we've found our answer. If not, we add the current number and its index to the map.`,
+    testCases: [{ input: '[2,7,11,15], 9', expectedOutput: '[0,1]' }],
+    hints: ['Try using a hash map', 'For each number, check if (target - number) exists in the map', 'O(n) time complexity is achievable'],
+    solution: 'Use a hash map to store numbers and their indices as you iterate.',
     topics: ['Array', 'Hash Table']
   },
   {
     id: 'reverse-string',
     title: 'Reverse String',
     difficulty: 'Easy',
-    description: `Write a function that reverses a string. The input string is given as an array of characters s.
-
-You must do this by modifying the input array in-place with O(1) extra memory.`,
+    description: 'Write a function that reverses a string. The input string is given as an array of characters s.\n\nYou must do this by modifying the input array in-place with O(1) extra memory.',
     examples: [
-      {
-        input: 's = ["h","e","l","l","o"]',
-        output: '["o","l","l","e","h"]'
-      },
-      {
-        input: 's = ["H","a","n","n","a","h"]',
-        output: '["h","a","n","n","a","H"]'
-      }
+      { input: 's = ["h","e","l","l","o"]', output: '["o","l","l","e","h"]' },
+      { input: 's = ["H","a","n","n","a","h"]', output: '["h","a","n","n","a","H"]' }
     ],
-    constraints: [
-      '1 <= s.length <= 10^5',
-      's[i] is a printable ascii character.'
-    ],
+    constraints: ['1 <= s.length <= 10^5', 's[i] is a printable ascii character.'],
     starterCode: {
-      javascript: `function reverseString(s) {
-    // Your code here
-}`,
-      python: `def reverse_string(s):
-    # Your code here
-    pass`,
-      typescript: `function reverseString(s: string[]): void {
-    // Your code here
-}`,
-      java: `public void reverseString(char[] s) {
-    // Your code here
-}`,
-      cpp: `void reverseString(vector<char>& s) {
-    // Your code here
-}`
+      javascript: 'function reverseString(s) {\n    // Your code here\n}',
+      python: 'def reverse_string(s):\n    # Your code here\n    pass',
+      typescript: 'function reverseString(s: string[]): void {\n    // Your code here\n}',
+      java: 'public void reverseString(char[] s) {\n    // Your code here\n}',
+      cpp: 'void reverseString(vector<char>& s) {\n    // Your code here\n}'
     },
-    testCases: [
-      { input: '["h","e","l","l","o"]', expectedOutput: '["o","l","l","e","h"]' },
-      { input: '["H","a","n","n","a","h"]', expectedOutput: '["h","a","n","n","a","H"]' }
-    ],
-    hints: [
-      'Use two pointers approach',
-      'Start from both ends and swap characters',
-      'Move pointers towards the center'
-    ],
-    solution: `Use two pointers starting from both ends of the array. Swap the characters at these pointers and move them towards the center until they meet.`,
+    testCases: [{ input: '["h","e","l","l","o"]', expectedOutput: '["o","l","l","e","h"]' }],
+    hints: ['Use two pointers', 'Start from both ends and swap', 'Move pointers towards center'],
+    solution: 'Two pointers starting from both ends, swap and move inward.',
     topics: ['Two Pointers', 'String']
   },
   {
     id: 'valid-parentheses',
     title: 'Valid Parentheses',
     difficulty: 'Easy',
-    description: `Given a string s containing just the characters '(', ')', '{', '}', '[' and ']', determine if the input string is valid.
-
-An input string is valid if:
-1. Open brackets must be closed by the same type of brackets.
-2. Open brackets must be closed in the correct order.
-3. Every close bracket has a corresponding open bracket of the same type.`,
+    description: 'Given a string s containing just the characters "(", ")", "{", "}", "[" and "]", determine if the input string is valid.\n\nAn input string is valid if:\n1. Open brackets must be closed by the same type of brackets.\n2. Open brackets must be closed in the correct order.\n3. Every close bracket has a corresponding open bracket of the same type.',
     examples: [
-      {
-        input: 's = "()"',
-        output: 'true'
-      },
-      {
-        input: 's = "()[]{}"',
-        output: 'true'
-      },
-      {
-        input: 's = "(]"',
-        output: 'false'
-      }
+      { input: 's = "()"', output: 'true' },
+      { input: 's = "()[]{}"', output: 'true' },
+      { input: 's = "(]"', output: 'false' }
     ],
-    constraints: [
-      '1 <= s.length <= 10^4',
-      's consists of parentheses only \'()[]{}\'.'
-    ],
+    constraints: ['1 <= s.length <= 10^4', 's consists of parentheses only "()[]{}"'],
     starterCode: {
-      javascript: `function isValid(s) {
-    // Your code here
-}`,
-      python: `def is_valid(s):
-    # Your code here
-    pass`,
-      typescript: `function isValid(s: string): boolean {
-    // Your code here
-    return false;
-}`,
-      java: `public boolean isValid(String s) {
-    // Your code here
-    return false;
-}`,
-      cpp: `bool isValid(string s) {
-    // Your code here
-    return false;
-}`
+      javascript: 'function isValid(s) {\n    // Your code here\n}',
+      python: 'def is_valid(s):\n    # Your code here\n    pass',
+      typescript: 'function isValid(s: string): boolean {\n    // Your code here\n    return false;\n}',
+      java: 'public boolean isValid(String s) {\n    // Your code here\n    return false;\n}',
+      cpp: 'bool isValid(string s) {\n    // Your code here\n    return false;\n}'
     },
-    testCases: [
-      { input: '"()"', expectedOutput: 'true' },
-      { input: '"()[]{}"', expectedOutput: 'true' },
-      { input: '"(]"', expectedOutput: 'false' },
-      { input: '"([)]"', expectedOutput: 'false' }
-    ],
-    hints: [
-      'Think about using a stack data structure',
-      'Push opening brackets onto the stack',
-      'When you see a closing bracket, check if it matches the top of the stack'
-    ],
-    solution: `Use a stack to keep track of opening brackets. When encountering a closing bracket, check if it matches the most recent opening bracket (top of stack).`,
+    testCases: [{ input: '"()"', expectedOutput: 'true' }, { input: '"(]"', expectedOutput: 'false' }],
+    hints: ['Use a stack', 'Push opening brackets', 'Check if closing bracket matches top of stack'],
+    solution: 'Use a stack. Push opening brackets, pop and verify for closing brackets.',
     topics: ['Stack', 'String']
   },
   {
     id: 'fizzbuzz',
-    title: 'Fizz Buzz',
+    title: 'FizzBuzz',
     difficulty: 'Easy',
-    description: `Given an integer n, return a string array answer (1-indexed) where:
-
-- answer[i] == "FizzBuzz" if i is divisible by 3 and 5.
-- answer[i] == "Fizz" if i is divisible by 3.
-- answer[i] == "Buzz" if i is divisible by 5.
-- answer[i] == i (as a string) if none of the above conditions are true.`,
+    description: 'Given an integer n, return a string array where:\n- answer[i] == "FizzBuzz" if i is divisible by 3 and 5.\n- answer[i] == "Fizz" if i is divisible by 3.\n- answer[i] == "Buzz" if i is divisible by 5.\n- answer[i] == i (as a string) if none of the above conditions are true.',
     examples: [
-      {
-        input: 'n = 3',
-        output: '["1","2","Fizz"]'
-      },
-      {
-        input: 'n = 5',
-        output: '["1","2","Fizz","4","Buzz"]'
-      },
-      {
-        input: 'n = 15',
-        output: '["1","2","Fizz","4","Buzz","Fizz","7","8","Fizz","Buzz","11","Fizz","13","14","FizzBuzz"]'
-      }
+      { input: 'n = 3', output: '["1","2","Fizz"]' },
+      { input: 'n = 5', output: '["1","2","Fizz","4","Buzz"]' }
     ],
-    constraints: [
-      '1 <= n <= 10^4'
-    ],
+    constraints: ['1 <= n <= 10^4'],
     starterCode: {
-      javascript: `function fizzBuzz(n) {
-    // Your code here
-}`,
-      python: `def fizz_buzz(n):
-    # Your code here
-    pass`,
-      typescript: `function fizzBuzz(n: number): string[] {
-    // Your code here
-    return [];
-}`,
-      java: `public List<String> fizzBuzz(int n) {
-    // Your code here
-    return new ArrayList<>();
-}`,
-      cpp: `vector<string> fizzBuzz(int n) {
-    // Your code here
-    return {};
-}`
+      javascript: 'function fizzBuzz(n) {\n    // Your code here\n}',
+      python: 'def fizz_buzz(n):\n    # Your code here\n    pass',
+      typescript: 'function fizzBuzz(n: number): string[] {\n    // Your code here\n    return [];\n}',
+      java: 'public List<String> fizzBuzz(int n) {\n    // Your code here\n    return new ArrayList<>();\n}',
+      cpp: 'vector<string> fizzBuzz(int n) {\n    // Your code here\n    return {};\n}'
     },
-    testCases: [
-      { input: '3', expectedOutput: '["1","2","Fizz"]' },
-      { input: '5', expectedOutput: '["1","2","Fizz","4","Buzz"]' },
-      { input: '15', expectedOutput: '["1","2","Fizz","4","Buzz","Fizz","7","8","Fizz","Buzz","11","Fizz","13","14","FizzBuzz"]' }
-    ],
-    hints: [
-      'Check divisibility by 15 first (both 3 and 5)',
-      'Then check divisibility by 3',
-      'Then check divisibility by 5',
-      'Otherwise, just add the number as a string'
-    ],
-    solution: `Iterate from 1 to n. For each number, check divisibility conditions in order: 15 (FizzBuzz), 3 (Fizz), 5 (Buzz), or the number itself.`,
+    testCases: [{ input: '3', expectedOutput: '["1","2","Fizz"]' }],
+    hints: ['Check divisibility by 15 first', 'Then check 3, then 5', 'Otherwise use the number as string'],
+    solution: 'Iterate 1 to n, check divisibility in order: 15, 3, 5, else number.',
     topics: ['Math', 'String']
   },
   {
     id: 'palindrome-number',
     title: 'Palindrome Number',
     difficulty: 'Easy',
-    description: `Given an integer x, return true if x is a palindrome, and false otherwise.
-
-An integer is a palindrome when it reads the same forward and backward.
-
-For example, 121 is a palindrome while 123 is not.`,
+    description: 'Given an integer x, return true if x is a palindrome, and false otherwise.\n\nAn integer is a palindrome when it reads the same forward and backward.',
     examples: [
-      {
-        input: 'x = 121',
-        output: 'true',
-        explanation: '121 reads as 121 from left to right and from right to left.'
-      },
-      {
-        input: 'x = -121',
-        output: 'false',
-        explanation: 'From left to right, it reads -121. From right to left, it becomes 121-. Therefore it is not a palindrome.'
-      },
-      {
-        input: 'x = 10',
-        output: 'false',
-        explanation: 'Reads 01 from right to left. Therefore it is not a palindrome.'
-      }
+      { input: 'x = 121', output: 'true', explanation: '121 reads as 121 from left to right and from right to left.' },
+      { input: 'x = -121', output: 'false' },
+      { input: 'x = 10', output: 'false' }
     ],
-    constraints: [
-      '-2^31 <= x <= 2^31 - 1'
-    ],
+    constraints: ['-2^31 <= x <= 2^31 - 1'],
     starterCode: {
-      javascript: `function isPalindrome(x) {
-    // Your code here
-}`,
-      python: `def is_palindrome(x):
-    # Your code here
-    pass`,
-      typescript: `function isPalindrome(x: number): boolean {
-    // Your code here
-    return false;
-}`,
-      java: `public boolean isPalindrome(int x) {
-    // Your code here
-    return false;
-}`,
-      cpp: `bool isPalindrome(int x) {
-    // Your code here
-    return false;
-}`
+      javascript: 'function isPalindrome(x) {\n    // Your code here\n}',
+      python: 'def is_palindrome(x):\n    # Your code here\n    pass',
+      typescript: 'function isPalindrome(x: number): boolean {\n    // Your code here\n    return false;\n}',
+      java: 'public boolean isPalindrome(int x) {\n    // Your code here\n    return false;\n}',
+      cpp: 'bool isPalindrome(int x) {\n    // Your code here\n    return false;\n}'
     },
-    testCases: [
-      { input: '121', expectedOutput: 'true' },
-      { input: '-121', expectedOutput: 'false' },
-      { input: '10', expectedOutput: 'false' }
-    ],
-    hints: [
-      'Negative numbers are never palindromes',
-      'You can convert to string or reverse the number mathematically',
-      'The mathematical approach is more elegant'
-    ],
-    solution: `Check if negative (return false). Then reverse the number by extracting digits and rebuilding. Compare reversed with original.`,
+    testCases: [{ input: '121', expectedOutput: 'true' }, { input: '-121', expectedOutput: 'false' }],
+    hints: ['Negative numbers are never palindromes', 'Convert to string and check', 'Or reverse the number mathematically'],
+    solution: 'Check negative. Convert to string and compare with reversed string.',
     topics: ['Math']
+  },
+  {
+    id: 'maximum-subarray',
+    title: 'Maximum Subarray',
+    difficulty: 'Medium',
+    description: 'Given an integer array nums, find the subarray with the largest sum, and return its sum.',
+    examples: [
+      { input: 'nums = [-2,1,-3,4,-1,2,1,-5,4]', output: '6', explanation: 'The subarray [4,-1,2,1] has the largest sum 6.' },
+      { input: 'nums = [1]', output: '1' },
+      { input: 'nums = [5,4,-1,7,8]', output: '23' }
+    ],
+    constraints: ['1 <= nums.length <= 10^5', '-10^4 <= nums[i] <= 10^4'],
+    starterCode: {
+      javascript: 'function maxSubArray(nums) {\n    // Your code here\n}',
+      python: 'def max_sub_array(nums):\n    # Your code here\n    pass',
+      typescript: 'function maxSubArray(nums: number[]): number {\n    // Your code here\n    return 0;\n}',
+      java: 'public int maxSubArray(int[] nums) {\n    // Your code here\n    return 0;\n}',
+      cpp: 'int maxSubArray(vector<int>& nums) {\n    // Your code here\n    return 0;\n}'
+    },
+    testCases: [{ input: '[-2,1,-3,4,-1,2,1,-5,4]', expectedOutput: '6' }],
+    hints: ['Look up Kadanes algorithm', 'Track current sum and max sum', 'Reset current sum when it goes negative'],
+    solution: "Kadane's algorithm: track currentSum and maxSum, reset currentSum to 0 when negative.",
+    topics: ['Array', 'Dynamic Programming']
+  },
+  {
+    id: 'climbing-stairs',
+    title: 'Climbing Stairs',
+    difficulty: 'Easy',
+    description: 'You are climbing a staircase. It takes n steps to reach the top.\n\nEach time you can either climb 1 or 2 steps. In how many distinct ways can you climb to the top?',
+    examples: [
+      { input: 'n = 2', output: '2', explanation: 'There are two ways: 1+1 and 2.' },
+      { input: 'n = 3', output: '3', explanation: 'There are three ways: 1+1+1, 1+2, and 2+1.' }
+    ],
+    constraints: ['1 <= n <= 45'],
+    starterCode: {
+      javascript: 'function climbStairs(n) {\n    // Your code here\n}',
+      python: 'def climb_stairs(n):\n    # Your code here\n    pass',
+      typescript: 'function climbStairs(n: number): number {\n    // Your code here\n    return 0;\n}',
+      java: 'public int climbStairs(int n) {\n    // Your code here\n    return 0;\n}',
+      cpp: 'int climbStairs(int n) {\n    // Your code here\n    return 0;\n}'
+    },
+    testCases: [{ input: '2', expectedOutput: '2' }, { input: '3', expectedOutput: '3' }],
+    hints: ['This is essentially the Fibonacci sequence', 'f(n) = f(n-1) + f(n-2)', 'Start with base cases: f(1)=1, f(2)=2'],
+    solution: 'Dynamic programming - Fibonacci pattern. f(n) = f(n-1) + f(n-2).',
+    topics: ['Dynamic Programming', 'Math']
+  },
+  {
+    id: 'reverse-linked-list',
+    title: 'Reverse Linked List',
+    difficulty: 'Easy',
+    description: 'Given the head of a singly linked list, reverse the list, and return the reversed list.',
+    examples: [
+      { input: 'head = [1,2,3,4,5]', output: '[5,4,3,2,1]' },
+      { input: 'head = [1,2]', output: '[2,1]' },
+      { input: 'head = []', output: '[]' }
+    ],
+    constraints: ['The number of nodes in the list is in range [0, 5000]', '-5000 <= Node.val <= 5000'],
+    starterCode: {
+      javascript: 'function reverseList(head) {\n    // Your code here\n}',
+      python: 'def reverse_list(head):\n    # Your code here\n    pass',
+      typescript: 'function reverseList(head: ListNode | null): ListNode | null {\n    // Your code here\n    return null;\n}',
+      java: 'public ListNode reverseList(ListNode head) {\n    // Your code here\n    return null;\n}',
+      cpp: 'ListNode* reverseList(ListNode* head) {\n    // Your code here\n    return nullptr;\n}'
+    },
+    testCases: [{ input: '[1,2,3,4,5]', expectedOutput: '[5,4,3,2,1]' }],
+    hints: ['Use three pointers: prev, current, next', 'Iterate and reverse the links', 'Can also be done recursively'],
+    solution: 'Iterative: use prev=null, curr=head. For each node, save next, point curr to prev, advance both.',
+    topics: ['Linked List']
+  },
+  {
+    id: 'binary-search',
+    title: 'Binary Search',
+    difficulty: 'Easy',
+    description: 'Given an array of integers nums which is sorted in ascending order, and an integer target, write a function to search target in nums. If target exists, then return its index. Otherwise, return -1.\n\nYou must write an algorithm with O(log n) runtime complexity.',
+    examples: [
+      { input: 'nums = [-1,0,3,5,9,12], target = 9', output: '4', explanation: '9 exists in nums and its index is 4.' },
+      { input: 'nums = [-1,0,3,5,9,12], target = 2', output: '-1', explanation: '2 does not exist in nums so return -1.' }
+    ],
+    constraints: ['1 <= nums.length <= 10^4', 'All integers in nums are unique', 'nums is sorted in ascending order'],
+    starterCode: {
+      javascript: 'function search(nums, target) {\n    // Your code here\n}',
+      python: 'def search(nums, target):\n    # Your code here\n    pass',
+      typescript: 'function search(nums: number[], target: number): number {\n    // Your code here\n    return -1;\n}',
+      java: 'public int search(int[] nums, int target) {\n    // Your code here\n    return -1;\n}',
+      cpp: 'int search(vector<int>& nums, int target) {\n    // Your code here\n    return -1;\n}'
+    },
+    testCases: [{ input: '[-1,0,3,5,9,12], 9', expectedOutput: '4' }],
+    hints: ['Use left and right pointers', 'Calculate mid = Math.floor((left + right) / 2)', 'If nums[mid] < target, search right half, else search left half'],
+    solution: 'Classic binary search with left/right pointers. Halve the search space each iteration.',
+    topics: ['Array', 'Binary Search']
+  },
+  {
+    id: 'merge-sorted-arrays',
+    title: 'Merge Sorted Array',
+    difficulty: 'Easy',
+    description: 'You are given two integer arrays nums1 and nums2, sorted in non-decreasing order, and two integers m and n, representing the number of elements in nums1 and nums2 respectively.\n\nMerge nums1 and nums2 into a single array sorted in non-decreasing order.',
+    examples: [
+      { input: 'nums1 = [1,2,3,0,0,0], m = 3, nums2 = [2,5,6], n = 3', output: '[1,2,2,3,5,6]' },
+      { input: 'nums1 = [1], m = 1, nums2 = [], n = 0', output: '[1]' }
+    ],
+    constraints: ['nums1.length == m + n', '0 <= m, n <= 200', '-10^9 <= nums1[i], nums2[j] <= 10^9'],
+    starterCode: {
+      javascript: 'function merge(nums1, m, nums2, n) {\n    // Your code here\n}',
+      python: 'def merge(nums1, m, nums2, n):\n    # Your code here\n    pass',
+      typescript: 'function merge(nums1: number[], m: number, nums2: number[], n: number): void {\n    // Your code here\n}',
+      java: 'public void merge(int[] nums1, int m, int[] nums2, int n) {\n    // Your code here\n}',
+      cpp: 'void merge(vector<int>& nums1, int m, vector<int>& nums2, int n) {\n    // Your code here\n}'
+    },
+    testCases: [{ input: '[1,2,3,0,0,0], 3, [2,5,6], 3', expectedOutput: '[1,2,2,3,5,6]' }],
+    hints: ['Start merging from the end', 'Use three pointers: i=m-1, j=n-1, k=m+n-1', 'Compare and place the larger element at position k'],
+    solution: 'Merge from the back using three pointers to avoid overwriting elements.',
+    topics: ['Array', 'Two Pointers']
   }
 ];
 

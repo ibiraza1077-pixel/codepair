@@ -27,9 +27,14 @@ interface ChatMessage {
   timestamp: Date;
 }
 
+interface SessionUser {
+  socketId: string;
+  username: string;
+}
+
 interface Session {
   id: string;
-  users: string[];
+  users: SessionUser[];
   code: string;
   language: string;
   problem: string | null;
@@ -83,7 +88,6 @@ app.get('/api/problems/:id', (req, res) => {
 
 app.post('/api/execute', async (req, res) => {
   const { code, language, testInput } = req.body;
-  
   let result;
   switch (language) {
     case 'javascript':
@@ -94,12 +98,8 @@ app.post('/api/execute', async (req, res) => {
       result = await CodeExecutor.executePython(code, testInput);
       break;
     default:
-      result = {
-        success: false,
-        error: 'Language ' + language + ' not supported yet'
-      };
+      result = { success: false, error: 'Language ' + language + ' not supported yet' };
   }
-  
   res.json(result);
 });
 
@@ -113,19 +113,29 @@ io.on('connection', (socket) => {
       return;
     }
 
+    // Remove any existing entry for this socket first
+    session.users = session.users.filter(u => u.socketId !== socket.id);
+
+    // Add user
+    session.users.push({ socketId: socket.id, username });
     socket.join(sessionId);
-    session.users.push(username);
+
+    // Store session info on socket for disconnect cleanup
+    (socket as any).sessionId = sessionId;
+    (socket as any).username = username;
+
+    const usernames = session.users.map(u => u.username);
 
     socket.emit('session-joined', {
       sessionId,
       code: session.code,
       language: session.language,
-      users: session.users,
+      users: usernames,
       problem: session.problem,
       chat: session.chat,
     });
 
-    socket.to(sessionId).emit('user-joined', { username, users: session.users });
+    socket.to(sessionId).emit('user-joined', { username, users: usernames });
     console.log(username + ' joined session ' + sessionId);
   });
 
@@ -161,11 +171,7 @@ io.on('connection', (socket) => {
   socket.on('chat-message', ({ sessionId, username, message }) => {
     const session = sessions.get(sessionId);
     if (session) {
-      const chatMessage: ChatMessage = {
-        username,
-        message,
-        timestamp: new Date(),
-      };
+      const chatMessage: ChatMessage = { username, message, timestamp: new Date() };
       session.chat.push(chatMessage);
       io.to(sessionId).emit('chat-message', chatMessage);
     }
@@ -181,6 +187,17 @@ io.on('connection', (socket) => {
 
   socket.on('disconnect', () => {
     console.log('User disconnected:', socket.id);
+    const sessionId = (socket as any).sessionId;
+    const username = (socket as any).username;
+
+    if (sessionId) {
+      const session = sessions.get(sessionId);
+      if (session) {
+        session.users = session.users.filter(u => u.socketId !== socket.id);
+        const usernames = session.users.map(u => u.username);
+        io.to(sessionId).emit('user-left', { username, users: usernames });
+      }
+    }
   });
 });
 
