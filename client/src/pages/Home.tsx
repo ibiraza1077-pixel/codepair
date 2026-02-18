@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Code2, Users, Zap } from 'lucide-react';
 
-const API_URL = 'http://localhost:5000';
+const API_URL = 'https://hearty-abundance-production.up.railway.app';
 
 function Home() {
   const [username, setUsername] = useState('');
