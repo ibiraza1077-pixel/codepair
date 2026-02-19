@@ -42,11 +42,9 @@ function Home() {
   return (
     <div style={{ minHeight: '100vh', background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)', position: 'relative', overflow: 'hidden' }}>
       
-      {/* Animated Background Elements */}
       <div style={{ position: 'absolute', top: '10%', left: '5%', width: '300px', height: '300px', background: 'rgba(255,255,255,0.1)', borderRadius: '50%', filter: 'blur(80px)' }}></div>
       <div style={{ position: 'absolute', bottom: '10%', right: '5%', width: '400px', height: '400px', background: 'rgba(255,255,255,0.08)', borderRadius: '50%', filter: 'blur(100px)' }}></div>
 
-      {/* Navigation */}
       <nav style={{ padding: '1.5rem 3rem', display: 'flex', justifyContent: 'space-between', alignItems: 'center', position: 'relative', zIndex: 10 }}>
         <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
           <Code size={32} color="white" />
@@ -55,7 +53,6 @@ function Home() {
         <a href="https://github.com/ibiraza1077-pixel/codepair" target="_blank" style={{ color: 'white', textDecoration: 'none', fontSize: '1rem', fontWeight: '500' }}>GitHub</a>
       </nav>
 
-      {/* Hero Section */}
       <div style={{ maxWidth: '1200px', margin: '0 auto', padding: '4rem 2rem', position: 'relative', zIndex: 10 }}>
         <div style={{ textAlign: 'center', marginBottom: '4rem' }}>
           <h2 style={{ fontSize: '3.5rem', fontWeight: '800', color: 'white', marginBottom: '1.5rem', lineHeight: '1.2' }}>
@@ -65,7 +62,6 @@ function Home() {
             Real-time collaborative coding interview platform. Practice together, code together, succeed together.
           </p>
 
-          {/* Main CTA Section */}
           <div style={{ background: 'rgba(255,255,255,0.95)', backdropFilter: 'blur(20px)', borderRadius: '24px', padding: '3rem', maxWidth: '500px', margin: '0 auto', boxShadow: '0 20px 60px rgba(0,0,0,0.3)' }}>
             <h3 style={{ fontSize: '1.5rem', fontWeight: '700', color: '#667eea', marginBottom: '2rem' }}>Start Coding Together</h3>
             
@@ -119,7 +115,6 @@ function Home() {
           </div>
         </div>
 
-        {/* Features Section */}
         <div style={{ marginTop: '6rem' }}>
           <h3 style={{ fontSize: '2.5rem', fontWeight: '700', color: 'white', textAlign: 'center', marginBottom: '3rem' }}>
             Code Better, Faster, Together
@@ -147,7 +142,6 @@ function Home() {
         </div>
       </div>
 
-      {/* Footer */}
       <div style={{ textAlign: 'center', padding: '2rem', color: 'rgba(255,255,255,0.7)', position: 'relative', zIndex: 10 }}>
         <p style={{ fontSize: '0.9rem' }}>Built with React, TypeScript, Socket.io & Express</p>
         <p style={{ fontSize: '0.85rem', marginTop: '0.5rem' }}>© 2026 CodePair. Made by Ibrahim.</p>
