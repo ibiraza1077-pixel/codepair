@@ -195,17 +195,17 @@ function Session() {
   const canExecute = ['javascript', 'typescript', 'python'].includes(language);
 
   return (
-    <div style={{ height: '100vh', display: 'flex', flexDirection: 'column', background: '#1e1e1e' }}>
+    <div style={{ width: '100vw', height: '100vh', display: 'flex', flexDirection: 'column', background: '#1e1e1e', overflow: 'hidden' }}>
 
       {/* HEADER */}
-      <div style={{ background: '#252526', padding: '0.6rem 1.5rem', display: 'flex', justifyContent: 'space-between', alignItems: 'center', borderBottom: '1px solid #3e3e42', flexShrink: 0 }}>
+      <div style={{ background: '#252526', padding: '0.6rem 1.5rem', display: 'flex', justifyContent: 'space-between', alignItems: 'center', borderBottom: '1px solid #3e3e42', flexShrink: 0, height: '60px' }}>
         <div style={{ display: 'flex', alignItems: 'center', gap: '1.5rem' }}>
-          <h2 style={{ fontSize: '1.1rem', color: '#007acc' }}>CodePair</h2>
+          <h2 style={{ fontSize: '1.1rem', color: '#007acc', margin: 0 }}>CodePair</h2>
           <div style={{ display: 'flex', alignItems: 'center', gap: '0.4rem' }}>
             <span style={{ color: '#888', fontSize: '0.8rem' }}>Session:</span>
             <code style={{ background: '#1e1e1e', padding: '0.2rem 0.4rem', borderRadius: '4px', fontSize: '0.75rem' }}>{sessionId?.slice(0, 8)}...</code>
-            <button onClick={copySessionId} style={{ background: 'transparent', padding: '0.2rem', display: 'flex' }}>
-              {copied ? <CheckCircle size={14} color="#4ec9b0" /> : <Copy size={14} />}
+            <button onClick={copySessionId} style={{ background: 'transparent', padding: '0.2rem', display: 'flex', border: 'none', cursor: 'pointer' }}>
+              {copied ? <CheckCircle size={14} color="#4ec9b0" /> : <Copy size={14} color="#888" />}
             </button>
           </div>
         </div>
@@ -214,10 +214,10 @@ function Session() {
           <div style={{ display: 'flex', alignItems: 'center', gap: '0.4rem' }}>
             <Timer size={16} color="#888" />
             <span style={{ fontFamily: 'monospace', fontSize: '0.9rem', color: timerRunning ? '#4ec9b0' : '#888' }}>{formatTime(seconds)}</span>
-            <button onClick={() => setTimerRunning(!timerRunning)} style={{ background: '#2d2d2d', color: 'white', padding: '0.2rem 0.5rem', fontSize: '0.75rem', borderRadius: '4px' }}>
+            <button onClick={() => setTimerRunning(!timerRunning)} style={{ background: '#2d2d2d', color: 'white', padding: '0.2rem 0.5rem', fontSize: '0.75rem', borderRadius: '4px', border: 'none', cursor: 'pointer' }}>
               {timerRunning ? 'Pause' : 'Start'}
             </button>
-            <button onClick={() => { setSeconds(0); setTimerRunning(false); }} style={{ background: '#2d2d2d', color: '#888', padding: '0.2rem 0.5rem', fontSize: '0.75rem', borderRadius: '4px' }}>
+            <button onClick={() => { setSeconds(0); setTimerRunning(false); }} style={{ background: '#2d2d2d', color: '#888', padding: '0.2rem 0.5rem', fontSize: '0.75rem', borderRadius: '4px', border: 'none', cursor: 'pointer' }}>
               Reset
             </button>
           </div>
@@ -231,14 +231,14 @@ function Session() {
           </select>
 
           <div style={{ display: 'flex', alignItems: 'center', gap: '0.4rem' }}>
-            <Users size={16} />
-            <span style={{ fontSize: '0.85rem' }}>{users.length}</span>
+            <Users size={16} color="#888" />
+            <span style={{ fontSize: '0.85rem', color: '#888' }}>{users.length}</span>
             {connected && <span style={{ width: '8px', height: '8px', background: '#4ec9b0', borderRadius: '50%', display: 'inline-block' }}></span>}
           </div>
 
-          <button
+          <button 
             onClick={endSession}
-            style={{ background: '#d32f2f', color: 'white', padding: '0.4rem 0.8rem', borderRadius: '4px', fontSize: '0.85rem', display: 'flex', alignItems: 'center', gap: '0.4rem', fontWeight: '500' }}
+            style={{ background: '#d32f2f', color: 'white', padding: '0.4rem 0.8rem', borderRadius: '4px', fontSize: '0.85rem', display: 'flex', alignItems: 'center', gap: '0.4rem', fontWeight: '500', border: 'none', cursor: 'pointer' }}
           >
             <LogOut size={14} />
             End Session
@@ -247,22 +247,22 @@ function Session() {
       </div>
 
       {/* MAIN LAYOUT */}
-      <div style={{ flex: 1, display: 'flex', overflow: 'hidden' }}>
+      <div style={{ flex: 1, display: 'flex', overflow: 'hidden', height: 'calc(100vh - 60px)' }}>
 
         {/* LEFT PANEL - Problem */}
-        <div style={{ width: '380px', flexShrink: 0, display: 'flex', flexDirection: 'column', borderRight: '1px solid #3e3e42', overflow: 'hidden' }}>
+        <div style={{ width: '350px', flexShrink: 0, display: 'flex', flexDirection: 'column', borderRight: '1px solid #3e3e42', overflow: 'hidden' }}>
 
-          <div style={{ padding: '0.75rem', borderBottom: '1px solid #3e3e42', display: 'flex', gap: '0.5rem' }}>
+          <div style={{ padding: '0.75rem', borderBottom: '1px solid #3e3e42', display: 'flex', gap: '0.5rem', flexShrink: 0 }}>
             <button
               onClick={() => setShowProblems(!showProblems)}
-              style={{ flex: 1, background: '#007acc', color: 'white', padding: '0.5rem', borderRadius: '6px', fontSize: '0.85rem', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '0.4rem' }}
+              style={{ flex: 1, background: '#007acc', color: 'white', padding: '0.5rem', borderRadius: '6px', fontSize: '0.85rem', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '0.4rem', border: 'none', cursor: 'pointer' }}
             >
               <BookOpen size={14} />
               {currentProblem ? 'Change Problem' : 'Select Problem'}
               {showProblems ? <ChevronUp size={14} /> : <ChevronDown size={14} />}
             </button>
             {currentProblem && (
-              <button onClick={requestHint} style={{ background: '#2d2d2d', color: '#ffd700', padding: '0.5rem', borderRadius: '6px', fontSize: '0.85rem', display: 'flex', alignItems: 'center', gap: '0.4rem', border: '1px solid #444' }}>
+              <button onClick={requestHint} style={{ background: '#2d2d2d', color: '#ffd700', padding: '0.5rem', borderRadius: '6px', fontSize: '0.85rem', display: 'flex', alignItems: 'center', gap: '0.4rem', border: '1px solid #444', cursor: 'pointer' }}>
                 <Lightbulb size={14} />
                 Hint
               </button>
@@ -270,16 +270,16 @@ function Session() {
           </div>
 
           {showProblems && (
-            <div style={{ background: '#252526', border: '1px solid #3e3e42', borderRadius: '6px', margin: '0.5rem', overflow: 'hidden', zIndex: 10 }}>
+            <div style={{ background: '#252526', border: '1px solid #3e3e42', borderRadius: '6px', margin: '0.5rem', overflow: 'auto', zIndex: 10, maxHeight: '400px' }}>
               {problems.map(p => (
                 <div
                   key={p.id}
                   onClick={() => selectProblem(p.id)}
-                  style={{ padding: '0.75rem 1rem', cursor: 'pointer', borderBottom: '1px solid #3e3e42', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}
+                  style={{ padding: '0.75rem 1rem', cursor: 'pointer', borderBottom: '1px solid #3e3e42', display: 'flex', justifyContent: 'space-between', alignItems: 'center', background: 'transparent' }}
                   onMouseEnter={e => (e.currentTarget.style.background = '#2d2d2d')}
                   onMouseLeave={e => (e.currentTarget.style.background = 'transparent')}
                 >
-                  <span style={{ fontSize: '0.9rem' }}>{p.title}</span>
+                  <span style={{ fontSize: '0.9rem', color: 'white' }}>{p.title}</span>
                   <span style={{ fontSize: '0.75rem', color: difficultyColor(p.difficulty), fontWeight: 'bold' }}>{p.difficulty}</span>
                 </div>
               ))}
@@ -287,19 +287,19 @@ function Session() {
           )}
 
           {showHint && hint && (
-            <div style={{ margin: '0.5rem', padding: '0.75rem', background: '#2d2d2d', borderRadius: '6px', border: '1px solid #ffd700', fontSize: '0.85rem' }}>
+            <div style={{ margin: '0.5rem', padding: '0.75rem', background: '#2d2d2d', borderRadius: '6px', border: '1px solid #ffd700', fontSize: '0.85rem', flexShrink: 0 }}>
               <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '0.4rem' }}>
                 <span style={{ color: '#ffd700', fontWeight: 'bold' }}>Hint</span>
-                <button onClick={() => setShowHint(false)} style={{ background: 'transparent', color: '#888', padding: 0, fontSize: '1rem' }}>×</button>
+                <button onClick={() => setShowHint(false)} style={{ background: 'transparent', color: '#888', padding: 0, fontSize: '1rem', border: 'none', cursor: 'pointer' }}>×</button>
               </div>
-              <p style={{ color: '#ccc', lineHeight: '1.4' }}>{hint}</p>
+              <p style={{ color: '#ccc', lineHeight: '1.4', margin: 0 }}>{hint}</p>
             </div>
           )}
 
           {currentProblem && showProblem && (
             <div style={{ flex: 1, overflow: 'auto', padding: '1rem' }}>
               <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1rem' }}>
-                <h3 style={{ fontSize: '1rem' }}>{currentProblem.title}</h3>
+                <h3 style={{ fontSize: '1rem', margin: 0, color: 'white' }}>{currentProblem.title}</h3>
                 <span style={{ fontSize: '0.8rem', color: difficultyColor(currentProblem.difficulty), fontWeight: 'bold', background: '#2d2d2d', padding: '0.2rem 0.6rem', borderRadius: '4px' }}>
                   {currentProblem.difficulty}
                 </span>
@@ -323,7 +323,7 @@ function Session() {
               ))}
 
               <h4 style={{ fontSize: '0.85rem', marginBottom: '0.5rem', color: '#888', marginTop: '1rem' }}>Constraints:</h4>
-              <ul style={{ paddingLeft: '1rem', fontSize: '0.8rem', color: '#ccc' }}>
+              <ul style={{ paddingLeft: '1rem', fontSize: '0.8rem', color: '#ccc', margin: 0 }}>
                 {currentProblem.constraints.map((c, i) => (
                   <li key={i} style={{ marginBottom: '0.3rem' }}>{c}</li>
                 ))}
@@ -334,13 +334,13 @@ function Session() {
           {!currentProblem && !showProblems && (
             <div style={{ flex: 1, display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#555', flexDirection: 'column', gap: '0.5rem' }}>
               <BookOpen size={40} />
-              <p style={{ fontSize: '0.9rem' }}>Select a problem to begin</p>
+              <p style={{ fontSize: '0.9rem', margin: 0 }}>Select a problem to begin</p>
             </div>
           )}
         </div>
 
         {/* CENTER - Editor + Output */}
-        <div style={{ flex: 1, display: 'flex', flexDirection: 'column', overflow: 'hidden' }}>
+        <div style={{ flex: 1, display: 'flex', flexDirection: 'column', overflow: 'hidden', minWidth: 0 }}>
           <div style={{ flex: 1, overflow: 'hidden' }}>
             <Editor
               height="100%"
@@ -365,28 +365,28 @@ function Session() {
               <button
                 onClick={runCode}
                 disabled={isRunning || !canExecute}
-                style={{ background: canExecute ? '#4ec9b0' : '#555', color: canExecute ? '#1e1e1e' : '#888', padding: '0.4rem 1rem', borderRadius: '6px', fontWeight: 'bold', fontSize: '0.85rem', display: 'flex', alignItems: 'center', gap: '0.4rem', cursor: canExecute ? 'pointer' : 'not-allowed' }}
+                style={{ background: canExecute ? '#4ec9b0' : '#555', color: canExecute ? '#1e1e1e' : '#888', padding: '0.4rem 1rem', borderRadius: '6px', fontWeight: 'bold', fontSize: '0.85rem', display: 'flex', alignItems: 'center', gap: '0.4rem', cursor: canExecute ? 'pointer' : 'not-allowed', border: 'none' }}
               >
                 <Play size={14} />
                 {isRunning ? 'Running...' : 'Run Code'}
               </button>
               <span style={{ color: '#888', fontSize: '0.8rem' }}>
-                {canExecute ? 'JavaScript & TypeScript supported' : 'Only JavaScript & TypeScript supported'}
+                {canExecute ? 'JavaScript & TypeScript execution supported (Python coming soon)' : 'Only JavaScript & TypeScript supported'}
               </span>
             </div>
-            <div style={{ padding: '0.75rem 1rem', minHeight: '80px', maxHeight: '150px', overflow: 'auto', fontFamily: 'monospace', fontSize: '0.85rem', color: outputError ? '#f44747' : '#4ec9b0', whiteSpace: 'pre-wrap' }}>
+            <div style={{ padding: '0.75rem 1rem', minHeight: '80px', maxHeight: '120px', overflow: 'auto', fontFamily: 'monospace', fontSize: '0.85rem', color: outputError ? '#f44747' : '#4ec9b0', whiteSpace: 'pre-wrap' }}>
               {output || 'Output will appear here...'}
             </div>
           </div>
         </div>
 
         {/* RIGHT PANEL - Chat + Participants */}
-        <div style={{ width: '260px', flexShrink: 0, display: 'flex', flexDirection: 'column', borderLeft: '1px solid #3e3e42' }}>
+        <div style={{ width: '260px', flexShrink: 0, display: 'flex', flexDirection: 'column', borderLeft: '1px solid #3e3e42', overflow: 'hidden' }}>
 
-          <div style={{ padding: '0.75rem', borderBottom: '1px solid #3e3e42' }}>
-            <h4 style={{ fontSize: '0.85rem', marginBottom: '0.5rem', color: '#888' }}>Participants ({users.length})</h4>
+          <div style={{ padding: '0.75rem', borderBottom: '1px solid #3e3e42', flexShrink: 0 }}>
+            <h4 style={{ fontSize: '0.85rem', marginBottom: '0.5rem', color: '#888', margin: '0 0 0.5rem 0' }}>Participants ({users.length})</h4>
             {users.map((u, i) => (
-              <div key={i} style={{ padding: '0.3rem 0', fontSize: '0.85rem', display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+              <div key={i} style={{ padding: '0.3rem 0', fontSize: '0.85rem', display: 'flex', alignItems: 'center', gap: '0.5rem', color: 'white' }}>
                 <span style={{ width: '8px', height: '8px', background: '#4ec9b0', borderRadius: '50%', display: 'inline-block' }}></span>
                 {u} {u === username && <span style={{ color: '#888', fontSize: '0.75rem' }}>(you)</span>}
               </div>
@@ -394,12 +394,12 @@ function Session() {
           </div>
 
           <div
-            style={{ padding: '0.75rem', borderBottom: '1px solid #3e3e42', display: 'flex', alignItems: 'center', justifyContent: 'space-between', cursor: 'pointer' }}
+            style={{ padding: '0.75rem', borderBottom: '1px solid #3e3e42', display: 'flex', alignItems: 'center', justifyContent: 'space-between', cursor: 'pointer', flexShrink: 0 }}
             onClick={() => setShowChat(!showChat)}
           >
             <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
               <MessageSquare size={16} color="#888" />
-              <h4 style={{ fontSize: '0.85rem', color: '#888' }}>Chat</h4>
+              <h4 style={{ fontSize: '0.85rem', color: '#888', margin: 0 }}>Chat</h4>
             </div>
             {showChat ? <ChevronUp size={14} color="#888" /> : <ChevronDown size={14} color="#888" />}
           </div>
@@ -419,7 +419,7 @@ function Session() {
                 <div ref={chatEndRef} />
               </div>
 
-              <div style={{ padding: '0.5rem', borderTop: '1px solid #3e3e42', display: 'flex', gap: '0.4rem' }}>
+              <div style={{ padding: '0.5rem', borderTop: '1px solid #3e3e42', display: 'flex', gap: '0.4rem', flexShrink: 0 }}>
                 <input
                   type="text"
                   placeholder="Type a message..."
@@ -428,7 +428,7 @@ function Session() {
                   onKeyDown={e => e.key === 'Enter' && sendMessage()}
                   style={{ flex: 1, padding: '0.4rem', fontSize: '0.8rem', background: '#2d2d2d', border: '1px solid #444', borderRadius: '4px', color: 'white' }}
                 />
-                <button onClick={sendMessage} style={{ background: '#007acc', color: 'white', padding: '0.4rem 0.6rem', borderRadius: '4px', fontSize: '0.8rem' }}>
+                <button onClick={sendMessage} style={{ background: '#007acc', color: 'white', padding: '0.4rem 0.6rem', borderRadius: '4px', fontSize: '0.8rem', border: 'none', cursor: 'pointer' }}>
                   Send
                 </button>
               </div>
