@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Users, Code, Zap, Globe } from 'lucide-react';
+import { Code, Zap, Users, Globe, Shield, Clock } from 'lucide-react';
 
 function Home() {
   const [username, setUsername] = useState('');
@@ -39,148 +39,182 @@ function Home() {
     navigate(`/session/${sessionId}?username=${encodeURIComponent(username)}`);
   };
 
-  const featurePills = [
-    { icon: Users, text: 'Real-time Collaboration' },
-    { icon: Zap, text: 'Practice Interviews' },
-    { icon: Code, text: 'Multiple Languages' },
-  ];
-
-  const featureCards = [
-    { icon: Users, title: 'Collaborate in Real-time', desc: 'See your partners code changes instantly as they type. No refresh needed.' },
-    { icon: Zap, title: 'Practice Interviews', desc: 'Simulate real coding interviews with built-in problems and timer.' },
-    { icon: Code, title: 'Multiple Languages', desc: 'Support for JavaScript, TypeScript, and Python with more coming soon.' },
-    { icon: Globe, title: 'Work from Anywhere', desc: 'No installation required. Just share a link and start coding together.' },
-  ];
-
   return (
-    <div style={{ minHeight: '100vh', width: '100%', background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)', position: 'relative', overflow: 'auto' }}>
+    <div style={{ minHeight: '100vh', background: 'linear-gradient(to bottom right, #0f172a 0%, #1e1b4b 50%, #312e81 100%)', color: 'white', overflow: 'auto' }}>
       
-      <div style={{ position: 'absolute', top: '10%', left: '5%', width: '400px', height: '400px', background: 'rgba(255,255,255,0.1)', borderRadius: '50%', filter: 'blur(100px)', animation: 'float 6s ease-in-out infinite' }}></div>
-      <div style={{ position: 'absolute', bottom: '10%', right: '5%', width: '500px', height: '500px', background: 'rgba(255,255,255,0.08)', borderRadius: '50%', filter: 'blur(120px)', animation: 'float 8s ease-in-out infinite reverse' }}></div>
-      <div style={{ position: 'absolute', top: '50%', right: '10%', width: '300px', height: '300px', background: 'rgba(255,255,255,0.06)', borderRadius: '50%', filter: 'blur(90px)', animation: 'float 7s ease-in-out infinite' }}></div>
-
-      <nav style={{ padding: '1.5rem 5%', display: 'flex', justifyContent: 'space-between', alignItems: 'center', position: 'relative', zIndex: 10 }}>
-        <div style={{ display: 'flex', alignItems: 'center', gap: '0.7rem' }}>
-          <Code size={36} color="white" strokeWidth={2.5} />
-          <h1 style={{ fontSize: '2rem', fontWeight: '800', color: 'white', margin: 0, letterSpacing: '-0.5px' }}>CodePair</h1>
+      {/* Header */}
+      <nav style={{ padding: '1.5rem 5%', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+        <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', background: 'rgba(255,255,255,0.05)', padding: '0.6rem 1.2rem', borderRadius: '12px', border: '1px solid rgba(255,255,255,0.1)' }}>
+          <Code size={24} color="white" />
+          <div>
+            <div style={{ fontSize: '1.2rem', fontWeight: '700' }}>CodePair</div>
+            <div style={{ fontSize: '0.7rem', color: 'rgba(255,255,255,0.6)' }}>Collaborative IDE</div>
+          </div>
         </div>
-        <a href="https://github.com/ibiraza1077-pixel/codepair" target="_blank" rel="noopener noreferrer" style={{ color: 'white', textDecoration: 'none', fontSize: '1rem', fontWeight: '600', padding: '0.7rem 1.5rem', background: 'rgba(255,255,255,0.15)', backdropFilter: 'blur(10px)', borderRadius: '10px', border: '1px solid rgba(255,255,255,0.2)', transition: 'all 0.3s' }}
-          onMouseEnter={(e) => { e.currentTarget.style.background = 'rgba(255,255,255,0.25)'; e.currentTarget.style.transform = 'translateY(-2px)'; }}
-          onMouseLeave={(e) => { e.currentTarget.style.background = 'rgba(255,255,255,0.15)'; e.currentTarget.style.transform = 'translateY(0)'; }}
+        <a href="https://github.com/ibiraza1077-pixel/codepair" target="_blank" rel="noopener noreferrer" 
+          style={{ background: 'rgba(255,255,255,0.1)', padding: '0.6rem 1.5rem', borderRadius: '10px', color: 'white', textDecoration: 'none', fontWeight: '600', border: '1px solid rgba(255,255,255,0.2)', display: 'flex', alignItems: 'center', gap: '0.5rem', transition: 'all 0.3s' }}
+          onMouseEnter={(e) => e.currentTarget.style.background = 'rgba(255,255,255,0.15)'}
+          onMouseLeave={(e) => e.currentTarget.style.background = 'rgba(255,255,255,0.1)'}
         >
           GitHub →
         </a>
       </nav>
 
-      <div style={{ minHeight: 'calc(100vh - 100px)', display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '2rem 5%', position: 'relative', zIndex: 10 }}>
-        <div style={{ maxWidth: '1400px', width: '100%', display: 'grid', gridTemplateColumns: '1.2fr 1fr', gap: '4rem', alignItems: 'center' }}>
-          
-          <div>
-            <h2 style={{ fontSize: '4.5rem', fontWeight: '900', color: 'white', marginBottom: '1.5rem', lineHeight: '1.1', letterSpacing: '-2px' }}>
-              THE COLLABORATIVE IDE, SOLVED
-            </h2>
-            <p style={{ fontSize: '1.4rem', color: 'rgba(255,255,255,0.95)', marginBottom: '3rem', lineHeight: '1.6' }}>
-              Real-time collaborative coding interview platform. Practice together, code together, succeed together.
-            </p>
-
-            <div style={{ display: 'flex', gap: '1rem', flexWrap: 'wrap' }}>
-              {featurePills.map((item, i) => (
-                <div key={i} style={{ display: 'flex', alignItems: 'center', gap: '0.7rem', background: 'rgba(255,255,255,0.15)', backdropFilter: 'blur(10px)', padding: '0.8rem 1.5rem', borderRadius: '50px', border: '1px solid rgba(255,255,255,0.2)' }}>
-                  <item.icon size={20} color="white" />
-                  <span style={{ color: 'white', fontSize: '0.95rem', fontWeight: '600' }}>{item.text}</span>
-                </div>
-              ))}
-            </div>
-          </div>
-
-          <div style={{ background: 'rgba(255,255,255,0.98)', backdropFilter: 'blur(20px)', borderRadius: '30px', padding: '3.5rem', boxShadow: '0 30px 90px rgba(0,0,0,0.25)', border: '1px solid rgba(255,255,255,0.3)' }}>
-            <h3 style={{ fontSize: '1.8rem', fontWeight: '800', color: '#667eea', marginBottom: '2.5rem', textAlign: 'center' }}>Start Coding Together</h3>
-            
-            <input
-              type="text"
-              placeholder="Enter your name"
-              value={username}
-              onChange={(e) => { setUsername(e.target.value); setError(''); }}
-              style={{ width: '100%', padding: '1.1rem 1.5rem', fontSize: '1.05rem', border: '2px solid #e5e7eb', borderRadius: '14px', marginBottom: '1.2rem', outline: 'none', transition: 'all 0.3s', fontWeight: '500' }}
-              onFocus={(e) => { e.target.style.borderColor = '#667eea'; e.target.style.boxShadow = '0 0 0 4px rgba(102,126,234,0.1)'; }}
-              onBlur={(e) => { e.target.style.borderColor = '#e5e7eb'; e.target.style.boxShadow = 'none'; }}
-            />
-
-            <button
-              onClick={createSession}
-              style={{ width: '100%', padding: '1.2rem 2rem', fontSize: '1.15rem', fontWeight: '700', color: 'white', background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)', border: 'none', borderRadius: '14px', cursor: 'pointer', marginBottom: '2rem', transition: 'all 0.3s', boxShadow: '0 12px 35px rgba(102,126,234,0.35)' }}
-              onMouseEnter={(e) => { e.currentTarget.style.transform = 'translateY(-3px)'; e.currentTarget.style.boxShadow = '0 16px 45px rgba(102,126,234,0.45)'; }}
-              onMouseLeave={(e) => { e.currentTarget.style.transform = 'translateY(0)'; e.currentTarget.style.boxShadow = '0 12px 35px rgba(102,126,234,0.35)'; }}
-            >
-              Create New Session
-            </button>
-
-            <div style={{ display: 'flex', alignItems: 'center', gap: '1rem', marginBottom: '2rem' }}>
-              <div style={{ flex: 1, height: '2px', background: 'linear-gradient(to right, transparent, #e5e7eb, transparent)' }}></div>
-              <span style={{ color: '#9ca3af', fontSize: '0.95rem', fontWeight: '600' }}>OR</span>
-              <div style={{ flex: 1, height: '2px', background: 'linear-gradient(to right, transparent, #e5e7eb, transparent)' }}></div>
-            </div>
-
-            <input
-              type="text"
-              placeholder="Enter session ID to join"
-              value={sessionId}
-              onChange={(e) => { setSessionId(e.target.value); setError(''); }}
-              style={{ width: '100%', padding: '1.1rem 1.5rem', fontSize: '1.05rem', border: '2px solid #e5e7eb', borderRadius: '14px', marginBottom: '1.2rem', outline: 'none', transition: 'all 0.3s', fontWeight: '500' }}
-              onFocus={(e) => { e.target.style.borderColor = '#667eea'; e.target.style.boxShadow = '0 0 0 4px rgba(102,126,234,0.1)'; }}
-              onBlur={(e) => { e.target.style.borderColor = '#e5e7eb'; e.target.style.boxShadow = 'none'; }}
-            />
-
-            <button
-              onClick={joinSession}
-              style={{ width: '100%', padding: '1.2rem 2rem', fontSize: '1.15rem', fontWeight: '700', color: '#667eea', background: 'white', border: '2px solid #667eea', borderRadius: '14px', cursor: 'pointer', transition: 'all 0.3s' }}
-              onMouseEnter={(e) => { e.currentTarget.style.background = '#667eea'; e.currentTarget.style.color = 'white'; e.currentTarget.style.transform = 'translateY(-2px)'; }}
-              onMouseLeave={(e) => { e.currentTarget.style.background = 'white'; e.currentTarget.style.color = '#667eea'; e.currentTarget.style.transform = 'translateY(0)'; }}
-            >
-              Join Existing Session
-            </button>
-
-            {error && (
-              <p style={{ color: '#ef4444', marginTop: '1.2rem', fontSize: '0.95rem', fontWeight: '600', textAlign: 'center' }}>{error}</p>
-            )}
-          </div>
+      {/* Badge */}
+      <div style={{ padding: '0 5%', marginTop: '2rem' }}>
+        <div style={{ display: 'inline-flex', alignItems: 'center', gap: '0.5rem', background: 'rgba(59, 130, 246, 0.1)', padding: '0.5rem 1.2rem', borderRadius: '50px', border: '1px solid rgba(59, 130, 246, 0.3)' }}>
+          <div style={{ width: '8px', height: '8px', background: '#3b82f6', borderRadius: '50%' }}></div>
+          <span style={{ fontSize: '0.85rem', color: '#93c5fd' }}>Live coding rooms • Built for interviews</span>
         </div>
       </div>
 
-      <div style={{ padding: '6rem 5%', position: 'relative', zIndex: 10 }}>
-        <div style={{ maxWidth: '1400px', margin: '0 auto' }}>
-          <h3 style={{ fontSize: '3rem', fontWeight: '900', color: 'white', textAlign: 'center', marginBottom: '4rem', letterSpacing: '-1px' }}>
-            Code Better, Faster, Together
-          </h3>
+      {/* Hero Section */}
+      <div style={{ padding: '3rem 5%', display: 'grid', gridTemplateColumns: '1.3fr 1fr', gap: '4rem', alignItems: 'center', maxWidth: '1400px', margin: '0 auto' }}>
+        
+        {/* Left Side */}
+        <div>
+          <h1 style={{ fontSize: '4.5rem', fontWeight: '900', lineHeight: '1.1', marginBottom: '1.5rem', background: 'linear-gradient(to right, #ffffff, #93c5fd)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent', backgroundClip: 'text' }}>
+            The prettiest way to <span style={{ background: 'linear-gradient(to right, #60a5fa, #c084fc, #f472b6)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent', backgroundClip: 'text' }}>code together</span>.
+          </h1>
           
-          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))', gap: '2.5rem' }}>
-            {featureCards.map((feature, i) => (
-              <div key={i} style={{ background: 'rgba(255,255,255,0.12)', backdropFilter: 'blur(20px)', padding: '2.5rem', borderRadius: '24px', border: '1px solid rgba(255,255,255,0.25)', transition: 'all 0.4s', cursor: 'pointer' }}
-                onMouseEnter={(e) => { e.currentTarget.style.transform = 'translateY(-10px)'; e.currentTarget.style.background = 'rgba(255,255,255,0.18)'; }}
-                onMouseLeave={(e) => { e.currentTarget.style.transform = 'translateY(0)'; e.currentTarget.style.background = 'rgba(255,255,255,0.12)'; }}
-              >
-                <div style={{ width: '70px', height: '70px', background: 'rgba(255,255,255,0.25)', borderRadius: '18px', display: 'flex', alignItems: 'center', justifyContent: 'center', marginBottom: '1.8rem' }}>
-                  <feature.icon size={32} color="white" strokeWidth={2.5} />
-                </div>
-                <h4 style={{ fontSize: '1.5rem', fontWeight: '800', color: 'white', marginBottom: '1rem' }}>{feature.title}</h4>
-                <p style={{ fontSize: '1.05rem', color: 'rgba(255,255,255,0.85)', lineHeight: '1.7' }}>{feature.desc}</p>
+          <p style={{ fontSize: '1.2rem', color: 'rgba(255,255,255,0.7)', marginBottom: '2rem', lineHeight: '1.7' }}>
+            Create a room in seconds. Pair program in real time. Practice technical interviews with the same setup you'll face in real life.
+          </p>
+
+          {/* Feature Pills */}
+          <div style={{ display: 'flex', gap: '1rem', flexWrap: 'wrap', marginBottom: '2rem' }}>
+            {[
+              { icon: Zap, text: 'Realtime pair coding' },
+              { icon: Shield, text: 'Secure rooms' },
+              { icon: Clock, text: 'Interview mode' },
+            ].map((item, i) => (
+              <div key={i} style={{ display: 'flex', alignItems: 'center', gap: '0.6rem', background: 'rgba(255,255,255,0.05)', padding: '0.6rem 1.2rem', borderRadius: '50px', border: '1px solid rgba(255,255,255,0.1)' }}>
+                <item.icon size={16} />
+                <span style={{ fontSize: '0.85rem', fontWeight: '600' }}>{item.text}</span>
+              </div>
+            ))}
+          </div>
+
+          {/* Feature Cards */}
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '1rem' }}>
+            {[
+              { icon: Zap, title: 'Low-latency', subtitle: 'Socket-based sync' },
+              { icon: Clock, title: 'Interview mode', subtitle: 'Timed practice' },
+              { icon: Users, title: 'Shareable', subtitle: 'Link + join' },
+            ].map((item, i) => (
+              <div key={i} style={{ background: 'rgba(255,255,255,0.03)', padding: '1.2rem', borderRadius: '16px', border: '1px solid rgba(255,255,255,0.08)' }}>
+                <item.icon size={20} style={{ marginBottom: '0.8rem', color: '#60a5fa' }} />
+                <div style={{ fontSize: '0.9rem', fontWeight: '700', marginBottom: '0.3rem' }}>{item.title}</div>
+                <div style={{ fontSize: '0.75rem', color: 'rgba(255,255,255,0.5)' }}>{item.subtitle}</div>
               </div>
             ))}
           </div>
         </div>
+
+        {/* Right Side - Form */}
+        <div style={{ background: 'rgba(30, 27, 75, 0.6)', backdropFilter: 'blur(20px)', padding: '2.5rem', borderRadius: '24px', border: '1px solid rgba(255,255,255,0.1)', boxShadow: '0 20px 60px rgba(0,0,0,0.3)' }}>
+          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '2rem' }}>
+            <h3 style={{ fontSize: '1.5rem', fontWeight: '700' }}>Start a session</h3>
+            <div style={{ fontSize: '0.75rem', color: 'rgba(255,255,255,0.5)' }}>No signup • Just vibes</div>
+          </div>
+
+          <div style={{ marginBottom: '1.2rem' }}>
+            <label style={{ display: 'block', fontSize: '0.85rem', marginBottom: '0.5rem', color: 'rgba(255,255,255,0.7)' }}>Your name</label>
+            <input
+              type="text"
+              placeholder="e.g. Ibrahim"
+              value={username}
+              onChange={(e) => { setUsername(e.target.value); setError(''); }}
+              style={{ width: '100%', padding: '0.9rem', background: 'rgba(0,0,0,0.3)', border: '1px solid rgba(255,255,255,0.15)', borderRadius: '12px', color: 'white', fontSize: '1rem', outline: 'none' }}
+              onFocus={(e) => e.target.style.borderColor = '#3b82f6'}
+              onBlur={(e) => e.target.style.borderColor = 'rgba(255,255,255,0.15)'}
+            />
+          </div>
+
+          <button
+            onClick={createSession}
+            style={{ width: '100%', padding: '1rem', background: 'linear-gradient(to right, #06b6d4, #3b82f6, #8b5cf6)', border: 'none', borderRadius: '12px', color: 'white', fontSize: '1rem', fontWeight: '700', cursor: 'pointer', marginBottom: '1.5rem', transition: 'transform 0.2s', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '0.5rem' }}
+            onMouseEnter={(e) => e.currentTarget.style.transform = 'translateY(-2px)'}
+            onMouseLeave={(e) => e.currentTarget.style.transform = 'translateY(0)'}
+          >
+            Create new session →
+          </button>
+
+          <div style={{ textAlign: 'center', color: 'rgba(255,255,255,0.4)', fontSize: '0.85rem', marginBottom: '1.5rem' }}>or</div>
+
+          <div style={{ marginBottom: '1.2rem' }}>
+            <label style={{ display: 'block', fontSize: '0.85rem', marginBottom: '0.5rem', color: 'rgba(255,255,255,0.7)' }}>Session ID</label>
+            <input
+              type="text"
+              placeholder="Paste session ID"
+              value={sessionId}
+              onChange={(e) => { setSessionId(e.target.value); setError(''); }}
+              style={{ width: '100%', padding: '0.9rem', background: 'rgba(0,0,0,0.3)', border: '1px solid rgba(255,255,255,0.15)', borderRadius: '12px', color: 'white', fontSize: '1rem', outline: 'none' }}
+              onFocus={(e) => e.target.style.borderColor = '#3b82f6'}
+              onBlur={(e) => e.target.style.borderColor = 'rgba(255,255,255,0.15)'}
+            />
+          </div>
+
+          <button
+            onClick={joinSession}
+            style={{ width: '100%', padding: '1rem', background: 'rgba(255,255,255,0.08)', border: '1px solid rgba(255,255,255,0.15)', borderRadius: '12px', color: 'white', fontSize: '1rem', fontWeight: '700', cursor: 'pointer', transition: 'all 0.2s', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '0.5rem' }}
+            onMouseEnter={(e) => e.currentTarget.style.background = 'rgba(255,255,255,0.12)'}
+            onMouseLeave={(e) => e.currentTarget.style.background = 'rgba(255,255,255,0.08)'}
+          >
+            Join existing →
+          </button>
+
+          {error && (
+            <p style={{ color: '#f87171', marginTop: '1rem', fontSize: '0.85rem', textAlign: 'center' }}>{error}</p>
+          )}
+
+          <div style={{ marginTop: '2rem', paddingTop: '1.5rem', borderTop: '1px solid rgba(255,255,255,0.08)' }}>
+            <div style={{ fontSize: '0.75rem', color: 'rgba(255,255,255,0.5)', display: 'flex', alignItems: 'center', gap: '0.5rem', marginBottom: '0.5rem' }}>
+              <div style={{ width: '6px', height: '6px', background: '#8b5cf6', borderRadius: '50%' }}></div>
+              Built with React + TypeScript
+            </div>
+            <div style={{ fontSize: '0.75rem', color: 'rgba(255,255,255,0.5)', display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+              <div style={{ width: '6px', height: '6px', background: '#06b6d4', borderRadius: '50%' }}></div>
+              Socket.io + Express backend
+            </div>
+          </div>
+        </div>
       </div>
 
-      <div style={{ textAlign: 'center', padding: '3rem 5% 4rem', color: 'rgba(255,255,255,0.8)', position: 'relative', zIndex: 10, borderTop: '1px solid rgba(255,255,255,0.1)' }}>
-        <p style={{ fontSize: '1rem', marginBottom: '0.5rem', fontWeight: '500' }}>Built with React, TypeScript, Socket.io & Express</p>
-        <p style={{ fontSize: '0.9rem', opacity: 0.7 }}>© 2026 CodePair. Made by Ibrahim.</p>
+      {/* Features Section */}
+      <div style={{ padding: '6rem 5%', maxWidth: '1400px', margin: '0 auto' }}>
+        <h2 style={{ fontSize: '3rem', fontWeight: '900', textAlign: 'center', marginBottom: '3rem' }}>
+          Code better, faster, together.
+        </h2>
+        <p style={{ textAlign: 'center', fontSize: '1.1rem', color: 'rgba(255,255,255,0.6)', marginBottom: '4rem', maxWidth: '600px', margin: '0 auto 4rem' }}>
+          Everything you need for pair practice and real interview reps.
+        </p>
+
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: '2rem' }}>
+          {[
+            { icon: Users, title: 'Collaborate instantly', desc: 'See changes live as you type — low-latency socket syncing means zero lag.' },
+            { icon: Zap, title: 'Interview-ready', desc: 'Timers, prompts, and structured problems just like the real thing.' },
+            { icon: Code, title: 'Multi-language', desc: 'JavaScript, TypeScript, Python — write in the language you interview in.' },
+            { icon: Globe, title: 'Link + go', desc: 'Share a session link and start coding together. No signup, no friction.' },
+          ].map((feature, i) => (
+            <div key={i} style={{ background: 'rgba(255,255,255,0.03)', padding: '2rem', borderRadius: '20px', border: '1px solid rgba(255,255,255,0.08)', transition: 'all 0.3s' }}
+              onMouseEnter={(e) => { e.currentTarget.style.background = 'rgba(255,255,255,0.06)'; e.currentTarget.style.transform = 'translateY(-5px)'; }}
+              onMouseLeave={(e) => { e.currentTarget.style.background = 'rgba(255,255,255,0.03)'; e.currentTarget.style.transform = 'translateY(0)'; }}
+            >
+              <div style={{ width: '50px', height: '50px', background: 'rgba(59, 130, 246, 0.1)', borderRadius: '12px', display: 'flex', alignItems: 'center', justifyContent: 'center', marginBottom: '1.5rem' }}>
+                <feature.icon size={24} color="#60a5fa" />
+              </div>
+              <h4 style={{ fontSize: '1.2rem', fontWeight: '700', marginBottom: '0.8rem' }}>{feature.title}</h4>
+              <p style={{ fontSize: '0.95rem', color: 'rgba(255,255,255,0.6)', lineHeight: '1.6' }}>{feature.desc}</p>
+            </div>
+          ))}
+        </div>
       </div>
 
-      <style>{`
-        @keyframes float {
-          0%, 100% { transform: translateY(0px); }
-          50% { transform: translateY(-20px); }
-        }
-      `}</style>
+      {/* Footer */}
+      <div style={{ textAlign: 'center', padding: '3rem 5%', borderTop: '1px solid rgba(255,255,255,0.08)', color: 'rgba(255,255,255,0.5)', fontSize: '0.9rem' }}>
+        <p>© 2026 CodePair. Made by Ibrahim.</p>
+      </div>
     </div>
   );
 }
