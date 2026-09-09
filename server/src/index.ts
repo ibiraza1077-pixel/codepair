@@ -3,7 +3,7 @@ import http from 'http';
 import { Server } from 'socket.io';
 import cors from 'cors';
 import dotenv from 'dotenv';
-import { v4 as uuidv4 } from 'uuid';
+import { randomUUID as uuidv4 } from 'node:crypto';
 import { getAllProblems, getProblemById } from './data/problems';
 import { CodeExecutor } from './services/codeExecutor';
 
@@ -13,12 +13,12 @@ const app = express();
 const server = http.createServer(app);
 const io = new Server(server, {
   cors: {
-    origin: '*',
+    origin: process.env.CLIENT_ORIGIN || 'http://localhost:5173',
     methods: ['GET', 'POST'],
   },
 });
 
-app.use(cors());
+app.use(cors({ origin: process.env.CLIENT_ORIGIN || 'http://localhost:5173' }));
 app.use(express.json());
 
 interface ChatMessage {
@@ -54,6 +54,10 @@ app.get('/health', (req, res) => {
 });
 
 app.post('/api/sessions/create', (req, res) => {
+  for (const [id, session] of sessions) {
+    if (!session.users.length && Date.now() - session.createdAt.getTime() > 24 * 60 * 60 * 1000) sessions.delete(id);
+  }
+  if (sessions.size >= 1000) return res.status(503).json({ error: 'Session capacity reached. Try again later.' });
   const sessionId = uuidv4();
   const session: Session = {
     id: sessionId,
@@ -91,26 +95,25 @@ app.get('/api/problems/:id', (req, res) => {
 });
 
 app.post('/api/execute', async (req, res) => {
-  const { code, language, testInput } = req.body;
-  let result;
-  switch (language) {
-    case 'javascript':
-    case 'typescript':
-      result = await CodeExecutor.executeJavaScript(code, testInput);
-      break;
-    case 'python':
-      result = await CodeExecutor.executePython(code, testInput);
-      break;
-    default:
-      result = { success: false, error: 'Language ' + language + ' not supported yet' };
-  }
+  const { code, language } = req.body || {};
+  const result = await CodeExecutor.execute(code, language);
   res.json(result);
 });
 
 io.on('connection', (socket) => {
   console.log('User connected:', socket.id);
 
-  socket.on('join-session', ({ sessionId, username }) => {
+  socket.on('join-session', (payload = {}) => {
+    const { sessionId, username } = payload || {};
+    if (typeof sessionId !== 'string' || typeof username !== 'string' || !username.trim() || username.length > 80) return;
+    if (socket.data.sessionId && socket.data.sessionId !== sessionId) {
+      const old = sessions.get(socket.data.sessionId);
+      if (old) {
+        old.users = old.users.filter(u => u.socketId !== socket.id);
+        socket.to(old.id).emit('user-left', { username: socket.data.username, users: old.users.map(u => u.username) });
+      }
+      socket.leave(socket.data.sessionId);
+    }
     const session = sessions.get(sessionId);
     if (!session) {
       socket.emit('error', { message: 'Session not found' });
@@ -121,8 +124,8 @@ io.on('connection', (socket) => {
     session.users.push({ socketId: socket.id, username });
     socket.join(sessionId);
 
-    (socket as any).sessionId = sessionId;
-    (socket as any).username = username;
+    socket.data.sessionId = sessionId;
+    socket.data.username = username;
 
     const usernames = session.users.map(u => u.username);
 
@@ -139,7 +142,9 @@ io.on('connection', (socket) => {
     console.log(username + ' joined session ' + sessionId);
   });
 
-  socket.on('code-change', ({ sessionId, code }) => {
+  socket.on('code-change', (payload = {}) => {
+    const { sessionId, code } = payload || {};
+    if (socket.data.sessionId !== sessionId || !socket.rooms.has(sessionId) || typeof code !== 'string' || code.length > 32000) return;
     const session = sessions.get(sessionId);
     if (session) {
       session.code = code;
@@ -147,7 +152,9 @@ io.on('connection', (socket) => {
     }
   });
 
-  socket.on('language-change', ({ sessionId, language }) => {
+  socket.on('language-change', (payload = {}) => {
+    const { sessionId, language } = payload || {};
+    if (socket.data.sessionId !== sessionId || !socket.rooms.has(sessionId) || !['javascript','typescript','python','java','cpp'].includes(language)) return;
     const session = sessions.get(sessionId);
     if (session) {
       session.language = language;
@@ -155,12 +162,14 @@ io.on('connection', (socket) => {
     }
   });
 
-  socket.on('problem-select', ({ sessionId, problemId }) => {
+  socket.on('problem-select', (payload = {}) => {
+    const { sessionId, problemId } = payload || {};
+    if (socket.data.sessionId !== sessionId || !socket.rooms.has(sessionId) || typeof problemId !== 'string') return;
     const session = sessions.get(sessionId);
     if (session) {
-      session.problem = problemId;
       const problem = getProblemById(problemId);
       if (problem) {
+        session.problem = problemId;
         const starterCode = problem.starterCode[session.language as keyof typeof problem.starterCode] || problem.starterCode.javascript;
         session.code = starterCode;
         io.to(sessionId).emit('problem-selected', { problemId, problem, code: starterCode });
@@ -168,16 +177,21 @@ io.on('connection', (socket) => {
     }
   });
 
-  socket.on('chat-message', ({ sessionId, username, message }) => {
+  socket.on('chat-message', (payload = {}) => {
+    const { sessionId, message } = payload || {};
+    if (socket.data.sessionId !== sessionId || !socket.rooms.has(sessionId) || typeof message !== 'string' || !message.trim() || message.length > 2000) return;
     const session = sessions.get(sessionId);
     if (session) {
-      const chatMessage: ChatMessage = { username, message, timestamp: new Date() };
+      const chatMessage: ChatMessage = { username: socket.data.username, message, timestamp: new Date() };
       session.chat.push(chatMessage);
+      session.chat = session.chat.slice(-100);
       io.to(sessionId).emit('chat-message', chatMessage);
     }
   });
 
-  socket.on('request-hint', ({ sessionId, problemId }) => {
+  socket.on('request-hint', (payload = {}) => {
+    const { sessionId, problemId } = payload || {};
+    if (socket.data.sessionId !== sessionId || !socket.rooms.has(sessionId) || typeof problemId !== 'string') return;
     const problem = getProblemById(problemId);
     if (problem && problem.hints.length > 0) {
       const hint = problem.hints[Math.floor(Math.random() * problem.hints.length)];
@@ -187,8 +201,8 @@ io.on('connection', (socket) => {
 
   socket.on('disconnect', () => {
     console.log('User disconnected:', socket.id);
-    const sessionId = (socket as any).sessionId;
-    const username = (socket as any).username;
+    const sessionId = socket.data.sessionId;
+    const username = socket.data.username;
 
     if (sessionId) {
       const session = sessions.get(sessionId);
@@ -202,8 +216,10 @@ io.on('connection', (socket) => {
 });
 
 const PORT = process.env.PORT || 5000;
-server.listen(PORT, () => {
+if (require.main === module) server.listen(PORT, () => {
   console.log('Server running on port ' + PORT);
   console.log('WebSocket ready for connections');
   console.log(getAllProblems().length + ' problems loaded');
 });
+
+export { app, server, io };

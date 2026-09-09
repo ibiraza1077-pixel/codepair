@@ -1,231 +1,65 @@
 # CodePair
 
-> Real-time collaborative coding interview platform built with TypeScript, React, Socket.io, and Express
+A TypeScript coding-practice application with shared Monaco editing, Socket.IO room updates, chat, a problem bank and hints. It demonstrates a React 19 client communicating with an Express API and an in-memory session store.
 
-A full-stack web application that enables multiple users to practice technical interviews together in real-time. Features live code synchronization, problem bank, code execution, chat, and intelligent hints.
+## Run locally
 
-![CodePair Demo](https://img.shields.io/badge/Status-Live-success) ![TypeScript](https://img.shields.io/badge/TypeScript-007ACC?logo=typescript&logoColor=white) ![React](https://img.shields.io/badge/React-20232A?logo=react&logoColor=61DAFB) ![Node.js](https://img.shields.io/badge/Node.js-43853D?logo=node.js&logoColor=white)
+Requires Node.js 22.12+ and npm.
 
----
-
-## Overview
-
-CodePair is a collaborative coding platform designed to simulate technical interview environments. It provides real-time code synchronization, integrated problem sets, and execution capabilities to help developers practice coding interviews together.
-
----
-
-## Core Features
-
-### Real-Time Collaboration
-- **Live Code Synchronization** - Instant propagation of code changes across all participants
-- **Multi-User Sessions** - Support for concurrent users in shared coding environments
-- **Integrated Chat** - In-session communication without context switching
-- **Session Timer** - Built-in timing for interview simulation
-
-### Development Environment
-- **Monaco Editor Integration** - Professional code editor with syntax highlighting and IntelliSense
-- **Multi-Language Support** - JavaScript, TypeScript, Python, Java, and C++ with language-specific features
-- **Code Execution Engine** - Sandboxed runtime environment for testing solutions
-- **Smart Autocomplete** - Context-aware code completion
-
-### Interview Practice
-- **Curated Problem Bank** - Collection of algorithmic challenges covering fundamental data structures and algorithms
-- **Intelligent Hint System** - Progressive hints to guide problem-solving without revealing solutions
-- **Difficulty Classification** - Problems organized by complexity level
-- **Topic Categorization** - Filtering by algorithmic concepts (Arrays, Hash Tables, Dynamic Programming, etc.)
-
-### User Interface
-- **Dark Theme** - Professional development environment aesthetic
-- **Responsive Design** - Optimized for desktop and tablet devices
-- **Session Management** - Simple sharing mechanism via session identifiers
-- **Participant Tracking** - Real-time display of active session members
-
----
-
-## Technology Stack
-
-### Frontend
-- React 18 with TypeScript
-- Socket.io Client for WebSocket communication
-- Monaco Editor (Microsoft's VS Code editor component)
-- React Router for client-side routing
-- Vite for build tooling and development server
-- Lucide React for iconography
-
-### Backend
-- Node.js with Express framework
-- Socket.io for real-time bidirectional communication
-- TypeScript for type safety and developer experience
-- VM2 for secure JavaScript code execution
-- UUID for session identifier generation
-
----
-
-## Installation and Setup
-
-### Prerequisites
-- Node.js version 18 or higher
-- npm or yarn package manager
-
-### Installation Steps
-
-1. Clone the repository
-```bash
-git clone https://github.com/ibiraza1077-pixel/codepair.git
-cd codepair
+```sh
+npm --prefix server ci
+npm --prefix client ci
+cp server/.env.example server/.env
+cp client/.env.example client/.env
+npm --prefix server run dev
 ```
 
-2. Install server dependencies
-```bash
-cd server
-npm install
+In a second terminal run `npm --prefix client run dev`, then open http://localhost:5173. The server defaults to port 5000. `VITE_API_URL` configures the client's HTTP and Socket.IO target; `CLIENT_ORIGIN` configures server CORS. For deployment, set both to the appropriate frontend/backend origins before building.
+
+## Features and boundaries
+
+- Create a room and share its ID; join with a display name.
+- Synchronise code, language choice and selected problem between room participants.
+- Exchange chat messages; membership is checked before room mutations and names come from the joined socket.
+- Browse problems with examples and starter code; request predefined hints.
+- Use a local interview timer. It is not synchronised between participants.
+- Edit JavaScript, TypeScript, Python, Java and C++. Execution supports the first three only when the optional runner is configured.
+
+Rooms live in one server process and disappear on restart. Room IDs act as sharing capabilities, not authenticated accounts. This implementation does not offer durable storage, operational transformation/CRDT conflict resolution, horizontal scaling or production abuse controls. Chat history is capped at 100 messages and new rooms are bounded.
+
+## Optional isolated execution
+
+Execution is disabled by default. The API never evaluates submitted code in its own process. On a dedicated execution host with Docker, prepare the images:
+
+```sh
+docker pull node:22-alpine
+docker pull python:3.12-alpine
 ```
 
-3. Install client dependencies
-```bash
-cd ../client
-npm install
+Set `ENABLE_CODE_EXECUTION=true` in `server/.env`, then restart. Each run uses a non-root, read-only container with no network, dropped capabilities, memory/CPU/process limits, a five-second wall-clock timeout and bounded output. At most two runs execute concurrently. TypeScript is transpiled before execution. There are no host-directory mounts; images must be pulled ahead of time.
+
+Docker daemon access is powerful. Do not mount a host Docker socket into a public API deployment; use an isolated runner host and add authentication/rate limiting before public operation. These controls are not a claim that containers provide absolute isolation against hostile code.
+
+## API and code layout
+
+| Route | Purpose |
+| --- | --- |
+| `GET /health` | API health |
+| `POST /api/sessions/create` | Create an in-memory room |
+| `GET /api/sessions/:id` | Read a room |
+| `GET /api/problems` | List problems |
+| `GET /api/problems/:id` | Read a problem |
+| `POST /api/execute` | Submit `{code, language}` to the optional runner |
+
+`server/src/index.ts` handles HTTP and sockets; `server/src/services/codeExecutor.ts` controls containers; `server/src/data/problems.ts` holds exercises; `client/src/pages/` contains the home and session screens.
+
+## Verification
+
+```sh
+npm --prefix server run build
+npm --prefix server test
+npm --prefix client run lint
+npm --prefix client run build
 ```
 
-### Development
-
-Start the backend server (from `server/` directory):
-```bash
-npm run dev
-```
-The server will run on `http://localhost:5000`
-
-Start the frontend application (from `client/` directory):
-```bash
-npm run dev
-```
-The client will run on `http://localhost:5173`
-
-Access the application by navigating to `http://localhost:5173` in your browser.
-
----
-
-## Usage Guide
-
-### Creating a Session
-1. Enter your display name
-2. Click "Create New Session"
-3. Share the generated Session ID with collaborators
-
-### Joining an Existing Session
-1. Enter your display name
-2. Input the Session ID provided by the session creator
-3. Click "Join Existing Session"
-
-### Collaborative Coding
-1. Select a problem from the available problem bank
-2. Write code in the shared editor environment
-3. Execute code to verify functionality
-4. Communicate via integrated chat
-5. Request hints for guidance when needed
-
----
-
-## Problem Collection
-
-The platform includes algorithmic challenges across multiple difficulty levels:
-
-**Easy Difficulty:**
-- Two Sum
-- Reverse String
-- Valid Parentheses
-- FizzBuzz
-- Palindrome Number
-- Climbing Stairs
-- Reverse Linked List
-- Binary Search
-- Merge Sorted Array
-
-**Medium Difficulty:**
-- Maximum Subarray
-
----
-
-## Architecture
-```
-codepair/
-├── server/                     # Backend Node.js application
-│   ├── src/
-│   │   ├── data/              # Problem definitions and test cases
-│   │   ├── services/          # Code execution and validation services
-│   │   └── index.ts           # Express server and Socket.io configuration
-│   ├── package.json
-│   └── tsconfig.json
-│
-├── client/                     # Frontend React application
-│   ├── src/
-│   │   ├── pages/             # Route components (Home, Session)
-│   │   ├── App.tsx            # Application root and routing
-│   │   └── App.css            # Global styles
-│   ├── package.json
-│   └── tsconfig.json
-│
-└── README.md
-```
-
----
-
-## Security Implementation
-
-- Sandboxed code execution environment using VM2
-- Execution timeout limits (5 seconds maximum)
-- Session-based isolation between concurrent users
-- No persistent storage of user code or personal data
-- Rate limiting on code execution requests
-
----
-
-## Future Development
-
-**Planned Features:**
-- User authentication and persistent profiles
-- Session recording and playback functionality
-- Complete Python execution support
-- AI-powered code review and optimization suggestions
-- WebRTC integration for video/audio communication
-- Expanded problem library (target: 50+ problems)
-- Company-specific problem collections
-- Performance analytics and progress tracking
-- Interview preparation roadmaps
-
----
-
-## Contributing
-
-Contributions are welcome. Please submit pull requests with:
-- Clear description of changes
-- Adherence to existing code style
-- Updated tests where applicable
-- Documentation updates for new features
-
----
-
-## License
-
-This project is licensed under the MIT License. See LICENSE file for details.
-
----
-
-## Author
-
-**Ibrahim**
-- GitHub: [@ibiraza1077-pixel](https://github.com/ibiraza1077-pixel)
-- Portfolio demonstration of full-stack development capabilities
-
----
-
-## Acknowledgments
-
-- Monaco Editor by Microsoft for the code editing component
-- Socket.io for real-time communication infrastructure
-- LeetCode for algorithmic problem inspiration
-- Open-source community for tooling and libraries
-
----
-
-**If you find this project useful, please consider starring the repository.**
+Socket regression tests check joining, collaborative editing and rejection of an unjoined writer. Runner tests are skipped unless `ENABLE_CODE_EXECUTION=true`; CI prepares Docker and tests typed TypeScript output plus infinite-loop termination. Live deployment uptime is a separate check.
