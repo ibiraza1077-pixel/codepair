@@ -1,6 +1,6 @@
 # CodePair
 
-A portfolio project by Ibrahim, a final-year Computer Science student seeking internship opportunities. This project explores real-time collaboration, TypeScript APIs and shared application state.
+A portfolio project by Ibrahim, a final-year Computer Science student seeking graduate software engineering roles. This project explores real-time collaboration, TypeScript APIs and shared application state.
 
 A TypeScript coding-practice application with shared Monaco editing, Socket.IO room updates, chat, a problem bank and hints. It demonstrates a React 19 client communicating with an Express API and an in-memory session store.
 
