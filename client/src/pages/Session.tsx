@@ -3,6 +3,7 @@ import { useParams, useSearchParams, useNavigate } from 'react-router-dom';
 import { io, Socket } from 'socket.io-client';
 import Editor from '@monaco-editor/react';
 import { Users, Copy, CheckCircle, Play, Lightbulb, MessageSquare, BookOpen, Timer, ChevronDown, ChevronUp, LogOut } from 'lucide-react';
+import type { ExecutionResult } from '../services/executionTypes';
 
 const SOCKET_URL = (import.meta.env.VITE_API_URL || (import.meta.env.DEV ? 'http://localhost:5000' : 'https://hearty-abundance-production.up.railway.app'));
 const API_URL = (import.meta.env.VITE_API_URL || (import.meta.env.DEV ? 'http://localhost:5000' : 'https://hearty-abundance-production.up.railway.app'));
@@ -140,12 +141,18 @@ function Session() {
     setOutput('Running...');
     setOutputError(false);
     try {
-      const res = await fetch(API_URL + '/api/execute', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ code, language }),
-      });
-      const data = await res.json();
+      let data: ExecutionResult;
+      if (language === 'javascript' || language === 'typescript') {
+        const { executeInBrowser } = await import('../services/browserRunner');
+        data = await executeInBrowser(code, language);
+      } else {
+        const res = await fetch(API_URL + '/api/execute', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ code, language }),
+        });
+        data = await res.json() as ExecutionResult;
+      }
       if (data.success) {
         setOutput(data.output || 'No output');
         setOutputError(false);
@@ -154,7 +161,7 @@ function Session() {
         setOutputError(true);
       }
     } catch {
-      setOutput('Failed to connect to server');
+      setOutput('Could not start the code runner.');
       setOutputError(true);
     } finally {
       setIsRunning(false);
@@ -199,7 +206,13 @@ function Session() {
     return '#f44747';
   };
 
-  const canExecute = EXECUTION_ENABLED && ['javascript', 'typescript', 'python'].includes(language);
+  const canExecuteInBrowser = language === 'javascript' || language === 'typescript';
+  const canExecute = canExecuteInBrowser || (EXECUTION_ENABLED && language === 'python');
+  const executionHint = canExecuteInBrowser
+    ? 'Runs in an isolated browser sandbox; execution does not use the API.'
+    : language === 'python'
+      ? 'Python needs the optional isolated server runner.'
+      : 'This language is available for editing only.';
 
   return (
     <div style={{ width: '100vw', height: '100vh', display: 'flex', flexDirection: 'column', background: '#1e1e1e', overflow: 'hidden' }}>
@@ -378,9 +391,7 @@ function Session() {
                 {isRunning ? 'Running...' : 'Run Code'}
               </button>
               <span style={{ color: '#888', fontSize: '0.8rem' }}>
-                {!EXECUTION_ENABLED
-                  ? 'Code execution is unavailable in this free demo; editing, chat and problems still work.'
-                  : canExecute ? 'JavaScript, TypeScript and Python execution available' : 'Choose JavaScript, TypeScript or Python to run code'}
+                {executionHint}
               </span>
             </div>
             <div style={{ padding: '0.75rem 1rem', minHeight: '80px', maxHeight: '120px', overflow: 'auto', fontFamily: 'monospace', fontSize: '0.85rem', color: outputError ? '#f44747' : '#4ec9b0', whiteSpace: 'pre-wrap' }}>

@@ -25,20 +25,20 @@ In a second terminal run `npm --prefix client run dev`, then open http://localho
 - Exchange chat messages; membership is checked before room mutations and names come from the joined socket.
 - Browse problems with examples and starter code; request predefined hints.
 - Use a local interview timer. It is not synchronised between participants.
-- Edit JavaScript, TypeScript, Python, Java and C++. Execution supports the first three only when the optional runner is configured.
+- Edit JavaScript, TypeScript, Python, Java and C++. JavaScript and TypeScript run locally in an isolated browser worker. Python execution needs the optional server runner.
 
 Rooms live in one server process and disappear on restart. Room IDs act as sharing capabilities, not authenticated accounts. This implementation does not offer durable storage, operational transformation/CRDT conflict resolution, horizontal scaling or production abuse controls. Chat history is capped at 100 messages and new rooms are bounded.
 
 ## Optional isolated execution
 
-Execution is disabled by default. The API never evaluates submitted code in its own process. On a dedicated execution host with Docker, prepare the images:
+The API's execution endpoint is disabled by default; it never evaluates submitted code in its own process. JavaScript and TypeScript use a separate browser sandbox on the free demo. On a dedicated execution host with Docker, prepare the images for optional Python execution:
 
 ```sh
 docker pull node:22-alpine
 docker pull python:3.12-alpine
 ```
 
-Set `ENABLE_CODE_EXECUTION=true` in `server/.env` and `VITE_EXECUTION_ENABLED=true` in `client/.env`, then restart the server and client. Each run uses a non-root, read-only container with no network, dropped capabilities, memory/CPU/process limits, a five-second wall-clock timeout and bounded output. At most two runs execute concurrently. TypeScript is transpiled before execution. There are no host-directory mounts; images must be pulled ahead of time.
+Set `ENABLE_CODE_EXECUTION=true` in `server/.env` and `VITE_EXECUTION_ENABLED=true` in `client/.env`, then restart the server and client. The server runner uses a non-root, read-only container with no network, dropped capabilities, memory/CPU/process limits, a five-second wall-clock timeout and bounded output. At most two server runs execute concurrently. There are no host-directory mounts; images must be pulled ahead of time.
 
 Docker daemon access is powerful. Do not mount a host Docker socket into a public API deployment; use an isolated runner host and add authentication/rate limiting before public operation. These controls are not a claim that containers provide absolute isolation against hostile code.
 
@@ -59,7 +59,7 @@ Docker daemon access is powerful. Do not mount a host Docker socket into a publi
 
 The root `render.yaml` provisions the API as one **Free** Render web service. Keep the frontend on Vercel. After deploying the Blueprint, set the Vercel frontend's `VITE_API_URL` to the actual Render URL and redeploy it. `CLIENT_ORIGIN` must match the frontend's origin exactly.
 
-The free demo supports rooms, collaborative editing and chat. Leave `VITE_EXECUTION_ENABLED=false` in Vercel so the interface accurately shows that code execution is unavailable without an isolated Docker runner. Rooms are lost whenever the service restarts or sleeps. Render sleeps free services after 15 minutes without inbound traffic; the next visitor may wait about a minute. Free services share 750 instance hours per workspace per month. Keep billing at £0 by using Free, leaving payment details unset and accepting suspension if usage limits are reached. See [Render's free service limits](https://render.com/docs/free).
+The free demo supports rooms, collaborative editing, chat and JavaScript/TypeScript execution in the visitor's browser. Submitted code runs inside a worker created by an opaque-origin sandboxed frame. Its content security policy blocks network requests and external scripts; a five-second timeout removes the frame. It cannot import packages or access server files. Leave `VITE_EXECUTION_ENABLED=false` in Vercel because Python still needs the optional isolated Docker runner. Rooms are lost whenever the service restarts or sleeps. Render sleeps free services after 15 minutes without inbound traffic; the next visitor may wait about a minute. Free services share 750 instance hours per workspace per month. Keep billing at £0 by using Free, leaving payment details unset and accepting suspension if usage limits are reached. See [Render's free service limits](https://render.com/docs/free).
 
 ## Verification commands
 
