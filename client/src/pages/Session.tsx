@@ -84,14 +84,15 @@ function Session() {
       socket.emit('join-session', { sessionId, username });
     });
 
-    socket.on('session-joined', ({ code: c, language: l, users: u, chat: ch, problem: problemId }) => {
+    socket.on('session-joined', ({ code: c, language: l, users: u, chat: ch, selectedProblem }) => {
       setCode(c);
       setLanguage(l);
       setUsers(u);
       if (ch) setChat(ch);
-      if (problemId) fetch(API_URL + '/api/problems/' + encodeURIComponent(problemId)).then(r => r.json()).then(data => setCurrentProblem(data.problem)).catch(() => setOutput('Could not load the selected problem.'));
+      setCurrentProblem(selectedProblem || null);
     });
 
+    socket.on('user-left', ({ users: u }) => setUsers(u));
     socket.on('user-joined', ({ users: u }) => setUsers(u));
     socket.on('code-update', ({ code: c }) => setCode(c));
     socket.on('language-update', ({ language: l }) => setLanguage(l));

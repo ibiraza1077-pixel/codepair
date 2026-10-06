@@ -106,6 +106,12 @@ io.on('connection', (socket) => {
   socket.on('join-session', (payload = {}) => {
     const { sessionId, username } = payload || {};
     if (typeof sessionId !== 'string' || typeof username !== 'string' || !username.trim() || username.length > 80) return;
+    const session = sessions.get(sessionId);
+    if (!session) {
+      socket.emit('error', { message: 'Session not found' });
+      return;
+    }
+
     if (socket.data.sessionId && socket.data.sessionId !== sessionId) {
       const old = sessions.get(socket.data.sessionId);
       if (old) {
@@ -114,12 +120,6 @@ io.on('connection', (socket) => {
       }
       socket.leave(socket.data.sessionId);
     }
-    const session = sessions.get(sessionId);
-    if (!session) {
-      socket.emit('error', { message: 'Session not found' });
-      return;
-    }
-
     session.users = session.users.filter(u => u.socketId !== socket.id);
     session.users.push({ socketId: socket.id, username });
     socket.join(sessionId);
@@ -135,6 +135,7 @@ io.on('connection', (socket) => {
       language: session.language,
       users: usernames,
       problem: session.problem,
+      selectedProblem: session.problem ? getProblemById(session.problem) : null,
       chat: session.chat,
     });
 

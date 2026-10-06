@@ -52,3 +52,26 @@ test('isolated runner executes TypeScript and terminates infinite loops', { skip
   const looping = await CodeExecutor.execute('while (true) {}', 'javascript');
   assert.equal(looping.success, false); assert.match(looping.error!, /5 seconds/);
 });
+
+test('late join receives selected problem and failed room switch preserves membership', async () => {
+  const url = await base();
+  const { sessionId } = await (await fetch(url + '/api/sessions/create', { method: 'POST' })).json() as any;
+  const { problems } = await (await fetch(url + '/api/problems')).json() as any;
+  const owner = connect(url, { transports: ['websocket'] });
+  const guest = connect(url, { transports: ['websocket'] });
+  try {
+    await Promise.all([once(owner, 'connect'), once(guest, 'connect')]);
+    const joined = once(owner, 'session-joined');
+    owner.emit('join-session', { sessionId, username: 'Owner' }); await joined;
+    const selected = once(owner, 'problem-selected');
+    owner.emit('problem-select', { sessionId, problemId: problems[0].id }); await selected;
+    const lateJoin = once(guest, 'session-joined');
+    guest.emit('join-session', { sessionId, username: 'Guest' });
+    assert.equal((await lateJoin)[0].selectedProblem.id, problems[0].id);
+    const failedJoin = new Promise(resolve => guest.once('error', resolve));
+    guest.emit('join-session', { sessionId: 'missing', username: 'Guest' }); await failedJoin;
+    const update = once(owner, 'code-update');
+    guest.emit('code-change', { sessionId, code: 'still a member' });
+    assert.equal((await update)[0].code, 'still a member');
+  } finally { owner.disconnect(); guest.disconnect(); }
+});
