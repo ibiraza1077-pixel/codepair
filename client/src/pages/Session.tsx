@@ -6,6 +6,7 @@ import { Users, Copy, CheckCircle, Play, Lightbulb, MessageSquare, BookOpen, Tim
 
 const SOCKET_URL = (import.meta.env.VITE_API_URL || (import.meta.env.DEV ? 'http://localhost:5000' : 'https://hearty-abundance-production.up.railway.app'));
 const API_URL = (import.meta.env.VITE_API_URL || (import.meta.env.DEV ? 'http://localhost:5000' : 'https://hearty-abundance-production.up.railway.app'));
+const EXECUTION_ENABLED = import.meta.env.VITE_EXECUTION_ENABLED === 'true';
 
 interface Problem {
   id: string;
@@ -198,7 +199,7 @@ function Session() {
     return '#f44747';
   };
 
-  const canExecute = ['javascript', 'typescript', 'python'].includes(language);
+  const canExecute = EXECUTION_ENABLED && ['javascript', 'typescript', 'python'].includes(language);
 
   return (
     <div style={{ width: '100vw', height: '100vh', display: 'flex', flexDirection: 'column', background: '#1e1e1e', overflow: 'hidden' }}>
@@ -231,7 +232,7 @@ function Session() {
           <select value={language} onChange={handleLanguageChange} style={{ background: '#2d2d2d', color: 'white', border: '1px solid #444', borderRadius: '4px', padding: '0.3rem', fontSize: '0.85rem' }}>
             <option value="javascript">JavaScript</option>
             <option value="typescript">TypeScript</option>
-            <option value="python">Python (coming soon)</option>
+            <option value="python">Python</option>
             <option value="java">Java (view only)</option>
             <option value="cpp">C++ (view only)</option>
           </select>
@@ -377,7 +378,9 @@ function Session() {
                 {isRunning ? 'Running...' : 'Run Code'}
               </button>
               <span style={{ color: '#888', fontSize: '0.8rem' }}>
-                {canExecute ? 'JavaScript & TypeScript execution supported (Python coming soon)' : 'Only JavaScript & TypeScript supported'}
+                {!EXECUTION_ENABLED
+                  ? 'Code execution is unavailable in this free demo; editing, chat and problems still work.'
+                  : canExecute ? 'JavaScript, TypeScript and Python execution available' : 'Choose JavaScript, TypeScript or Python to run code'}
               </span>
             </div>
             <div style={{ padding: '0.75rem 1rem', minHeight: '80px', maxHeight: '120px', overflow: 'auto', fontFamily: 'monospace', fontSize: '0.85rem', color: outputError ? '#f44747' : '#4ec9b0', whiteSpace: 'pre-wrap' }}>

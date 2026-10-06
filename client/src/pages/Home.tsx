@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Code, Zap, Users, Globe, Shield, Clock } from 'lucide-react';
+import { Code, Zap, Users, Globe, Link2, Clock } from 'lucide-react';
 
 function Home() {
   const [username, setUsername] = useState('');
@@ -86,7 +86,7 @@ function Home() {
           <div style={{ display: 'flex', gap: '1rem', flexWrap: 'wrap', marginBottom: '2rem' }}>
             {[
               { icon: Zap, text: 'Realtime pair coding' },
-              { icon: Shield, text: 'Secure rooms' },
+              { icon: Link2, text: 'Shareable room IDs' },
               { icon: Clock, text: 'Interview mode' },
             ].map((item, i) => (
               <div key={i} style={{ display: 'flex', alignItems: 'center', gap: '0.6rem', background: 'rgba(255,255,255,0.05)', padding: '0.6rem 1.2rem', borderRadius: '50px', border: '1px solid rgba(255,255,255,0.1)' }}>
