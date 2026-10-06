@@ -38,7 +38,7 @@ docker pull node:22-alpine
 docker pull python:3.12-alpine
 ```
 
-Set `ENABLE_CODE_EXECUTION=true` in `server/.env`, then restart. Each run uses a non-root, read-only container with no network, dropped capabilities, memory/CPU/process limits, a five-second wall-clock timeout and bounded output. At most two runs execute concurrently. TypeScript is transpiled before execution. There are no host-directory mounts; images must be pulled ahead of time.
+Set `ENABLE_CODE_EXECUTION=true` in `server/.env` and `VITE_EXECUTION_ENABLED=true` in `client/.env`, then restart the server and client. Each run uses a non-root, read-only container with no network, dropped capabilities, memory/CPU/process limits, a five-second wall-clock timeout and bounded output. At most two runs execute concurrently. TypeScript is transpiled before execution. There are no host-directory mounts; images must be pulled ahead of time.
 
 Docker daemon access is powerful. Do not mount a host Docker socket into a public API deployment; use an isolated runner host and add authentication/rate limiting before public operation. These controls are not a claim that containers provide absolute isolation against hostile code.
 
@@ -59,7 +59,7 @@ Docker daemon access is powerful. Do not mount a host Docker socket into a publi
 
 The root `render.yaml` provisions the API as one **Free** Render web service. Keep the frontend on Vercel. After deploying the Blueprint, set the Vercel frontend's `VITE_API_URL` to the actual Render URL and redeploy it. `CLIENT_ORIGIN` must match the frontend's origin exactly.
 
-The free demo supports rooms, collaborative editing and chat. Code execution stays disabled because this hosting setup has no isolated Docker runner. Rooms are lost whenever the service restarts or sleeps. Render sleeps free services after 15 minutes without inbound traffic; the next visitor may wait about a minute. Free services share 750 instance hours per workspace per month. Keep billing at £0 by using Free, leaving payment details unset and accepting suspension if usage limits are reached. See [Render's free service limits](https://render.com/docs/free).
+The free demo supports rooms, collaborative editing and chat. Leave `VITE_EXECUTION_ENABLED=false` in Vercel so the interface accurately shows that code execution is unavailable without an isolated Docker runner. Rooms are lost whenever the service restarts or sleeps. Render sleeps free services after 15 minutes without inbound traffic; the next visitor may wait about a minute. Free services share 750 instance hours per workspace per month. Keep billing at £0 by using Free, leaving payment details unset and accepting suspension if usage limits are reached. See [Render's free service limits](https://render.com/docs/free).
 
 ## Verification commands
 
