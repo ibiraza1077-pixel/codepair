@@ -4,8 +4,8 @@ import { io, Socket } from 'socket.io-client';
 import Editor from '@monaco-editor/react';
 import { Users, Copy, CheckCircle, Play, Lightbulb, MessageSquare, BookOpen, Timer, ChevronDown, ChevronUp, LogOut } from 'lucide-react';
 
-const SOCKET_URL = 'https://hearty-abundance-production.up.railway.app';
-const API_URL = 'https://hearty-abundance-production.up.railway.app';
+const SOCKET_URL = (import.meta.env.VITE_API_URL || (import.meta.env.DEV ? 'http://localhost:5000' : 'https://hearty-abundance-production.up.railway.app'));
+const API_URL = (import.meta.env.VITE_API_URL || (import.meta.env.DEV ? 'http://localhost:5000' : 'https://hearty-abundance-production.up.railway.app'));
 
 interface Problem {
   id: string;
@@ -61,7 +61,8 @@ function Session() {
   useEffect(() => {
     fetch(API_URL + '/api/problems')
       .then(r => r.json())
-      .then(data => setProblems(data.problems));
+      .then(data => setProblems(data.problems || []))
+      .catch(() => { setOutput('Could not load problems.'); setOutputError(true); });
   }, []);
 
   useEffect(() => {
@@ -75,18 +76,23 @@ function Session() {
     const socket = io(SOCKET_URL);
     socketRef.current = socket;
 
+    socket.on('disconnect', () => setConnected(false));
+    socket.on('connect_error', () => { setConnected(false); setOutput('Cannot connect to the session server.'); setOutputError(true); });
+    socket.on('error', ({ message }) => { setOutput(message); setOutputError(true); });
     socket.on('connect', () => {
       setConnected(true);
       socket.emit('join-session', { sessionId, username });
     });
 
-    socket.on('session-joined', ({ code: c, language: l, users: u, chat: ch }) => {
+    socket.on('session-joined', ({ code: c, language: l, users: u, chat: ch, selectedProblem }) => {
       setCode(c);
       setLanguage(l);
       setUsers(u);
       if (ch) setChat(ch);
+      setCurrentProblem(selectedProblem || null);
     });
 
+    socket.on('user-left', ({ users: u }) => setUsers(u));
     socket.on('user-joined', ({ users: u }) => setUsers(u));
     socket.on('code-update', ({ code: c }) => setCode(c));
     socket.on('language-update', ({ language: l }) => setLanguage(l));

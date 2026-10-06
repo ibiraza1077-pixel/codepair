@@ -8,7 +8,7 @@ function Home() {
   const [error, setError] = useState('');
   const navigate = useNavigate();
 
-  const API_URL = 'https://hearty-abundance-production.up.railway.app';
+  const API_URL = (import.meta.env.VITE_API_URL || (import.meta.env.DEV ? 'http://localhost:5000' : 'https://hearty-abundance-production.up.railway.app'));
 
   const createSession = async () => {
     if (!username.trim()) {
@@ -20,9 +20,10 @@ function Home() {
       const response = await fetch(`${API_URL}/api/sessions/create`, {
         method: 'POST',
       });
+      if (!response.ok) throw new Error('Could not create session');
       const data = await response.json();
       navigate(`/session/${data.sessionId}?username=${encodeURIComponent(username)}`);
-    } catch (err) {
+    } catch {
       setError('Failed to create session');
     }
   };
@@ -192,7 +193,7 @@ function Home() {
 
         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: '2rem' }}>
           {[
-            { icon: Users, title: 'Collaborate instantly', desc: 'See changes live as you type — low-latency socket syncing means zero lag.' },
+            { icon: Users, title: 'Collaborate instantly', desc: 'See changes live as you type — low-latency socket syncing keeps participants in sync.' },
             { icon: Zap, title: 'Interview-ready', desc: 'Timers, prompts, and structured problems just like the real thing.' },
             { icon: Code, title: 'Multi-language', desc: 'JavaScript, TypeScript, Python — write in the language you interview in.' },
             { icon: Globe, title: 'Link + go', desc: 'Share a session link and start coding together. No signup, no friction.' },
