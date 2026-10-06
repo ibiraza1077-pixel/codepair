@@ -55,7 +55,13 @@ Docker daemon access is powerful. Do not mount a host Docker socket into a publi
 
 `server/src/index.ts` handles HTTP and sockets; `server/src/services/codeExecutor.ts` controls containers; `server/src/data/problems.ts` holds exercises; `client/src/pages/` contains the home and session screens.
 
-## Verification
+## Free demo hosting
+
+The root `render.yaml` provisions the API as one **Free** Render web service. Keep the frontend on Vercel. After deploying the Blueprint, set the Vercel frontend's `VITE_API_URL` to the actual Render URL and redeploy it. `CLIENT_ORIGIN` must match the frontend's origin exactly.
+
+The free demo supports rooms, collaborative editing and chat. Code execution stays disabled because this hosting setup has no isolated Docker runner. Rooms are lost whenever the service restarts or sleeps. Render sleeps free services after 15 minutes without inbound traffic; the next visitor may wait about a minute. Free services share 750 instance hours per workspace per month. Keep billing at £0 by using Free, leaving payment details unset and accepting suspension if usage limits are reached. See [Render's free service limits](https://render.com/docs/free).
+
+## Verification commands
 
 ```sh
 npm --prefix server run build
