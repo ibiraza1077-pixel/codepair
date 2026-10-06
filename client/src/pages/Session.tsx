@@ -97,7 +97,11 @@ function Session() {
     socket.on('user-left', ({ users: u }) => setUsers(u));
     socket.on('user-joined', ({ users: u }) => setUsers(u));
     socket.on('code-update', ({ code: c }) => setCode(c));
-    socket.on('language-update', ({ language: l }) => setLanguage(l));
+    socket.on('language-update', ({ language: l }) => {
+      setLanguage(l);
+      setOutput('');
+      setOutputError(false);
+    });
 
     socket.on('problem-selected', ({ problem, code: c }) => {
       setCurrentProblem(problem);
@@ -129,6 +133,8 @@ function Session() {
   const handleLanguageChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
     const l = e.target.value;
     setLanguage(l);
+    setOutput('');
+    setOutputError(false);
     socketRef.current?.emit('language-change', { sessionId, language: l });
   };
 
@@ -242,7 +248,7 @@ function Session() {
             </button>
           </div>
 
-          <select value={language} onChange={handleLanguageChange} style={{ background: '#2d2d2d', color: 'white', border: '1px solid #444', borderRadius: '4px', padding: '0.3rem', fontSize: '0.85rem' }}>
+          <select value={language} onChange={handleLanguageChange} disabled={isRunning} style={{ background: '#2d2d2d', color: 'white', border: '1px solid #444', borderRadius: '4px', padding: '0.3rem', fontSize: '0.85rem' }}>
             <option value="javascript">JavaScript</option>
             <option value="typescript">TypeScript</option>
             <option value="python">Python</option>
